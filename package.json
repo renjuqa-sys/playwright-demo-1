@@ -1,0 +1,49 @@
+{
+  "name": "cfs_web_qa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx,.js",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js --fix",
+    "format": "prettier --write .",
+    "// --- WEB SCRIPTS ---": "",
+    "test:web:smoke": "npx playwright test --project=web-smoke-guest --project=web-smoke-member",
+    "test:web:regression": "npx playwright test --project=web-regression-guest --project=web-regression-member",
+    "// --- MOBILE SCRIPTS ---": "",
+    "test:mobile:smoke": "npx playwright test --project=mobile-smoke-guest --project=mobile-smoke-member",
+    "test:mobile:regression": "npx playwright test --project=mobile-regression-guest --project=mobile-regression-member",
+    "// --- UTILITY SCRIPTS ---": "",
+    "test:all:smoke": "npm run test:web:smoke && npm run test:mobile:smoke",
+    "test:all:regression": "npm run test:web:regression && npm run test:mobile:regression",
+    "test:ui": "npx playwright test --ui",
+    "auth:setup": "npx playwright test --project=setup",
+    "report": "npx playwright show-report",
+    "merge report": "npx playwright merge-reports --reporter html ./all-blob-reports",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.9",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.5.1",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
