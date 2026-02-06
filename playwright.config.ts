@@ -4,7 +4,7 @@ import { TAGS } from './src/utils/tags';
 import path from 'path';
 
 // Initialize dotenv
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -14,7 +14,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  workers: process.env.CI ? 2 : 1,
   reporter: 'html',
   use: {
     baseURL: process.env.BASE_URL || 'https://www.demoblaze.com/',
@@ -24,16 +24,30 @@ export default defineConfig({
   },
 
   projects: [
-    // --- 1. GLOBAL SETUPS (Split by Platform) ---
+    // --- WEB SETUP & TEARDOWN ---
     {
       name: 'setup-web',
-      testMatch: /auth\.setup\.ts/,
-      grep: /@web-auth/, // Only runs web login loops
+      testMatch: /auth.setup.ts/,
+      grep: /@web-auth/,
+      teardown: 'teardown-web',
     },
     {
+      name: 'teardown-web',
+      testMatch: /auth.teardown.ts/,
+      grep: /@web-cleanup/,
+    },
+
+    // --- MOBILE SETUP & TEARDOWN ---
+    {
       name: 'setup-mobile',
-      testMatch: /auth\.setup\.ts/,
-      grep: /@mobile-auth/, // Only runs mobile login loops
+      testMatch: /auth.setup.ts/,
+      grep: /@mobile-auth/,
+      teardown: 'teardown-mobile',
+    },
+    {
+      name: 'teardown-mobile',
+      testMatch: /auth.teardown.ts/,
+      grep: /@mobile-cleanup/,
     },
 
     // --- 2. WEB REGRESSION ---
@@ -48,7 +62,6 @@ export default defineConfig({
     {
       name: 'web-regression-member',
       testDir: './tests/web',
-      // Runs @regression tests that require @auth, OR @universal tests
       grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.AUTH)],
       dependencies: ['setup-web'],
       use: {
