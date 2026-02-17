@@ -9,3 +9,6 @@ playwright/.cache/
 .auth/*
 !.auth/.gitkeep.
 .env
+
+# Linting
+.eslintcache
