@@ -1,10 +1,11 @@
 import { test as base } from '@playwright/test';
-import { WebHomePage, WebProductDetailsPage, WebSearchResultsPage } from '@pages/web';
+import { WebHomePage, WebProductDetailsPage, WebSearchResultsPage, WebLoginPage } from '@pages/web';
 import path from 'path';
 // ... import other pages
 
 type MyFixtures = {
   webHomePage: WebHomePage;
+  webLoginPage: WebLoginPage;
   webSearchResultsPage: WebSearchResultsPage;
   webProductDetailsPage: WebProductDetailsPage;
 };
@@ -28,6 +29,9 @@ export const test = base.extend<MyFixtures>({
   },
   webHomePage: async ({ page }, use) => {
     await use(new WebHomePage(page));
+  },
+  webLoginPage: async ({ page }, use) => {
+    await use(new WebLoginPage(page));
   },
   webProductDetailsPage: async ({ page }, use) => {
     await use(new WebProductDetailsPage(page));

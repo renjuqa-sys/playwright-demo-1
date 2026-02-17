@@ -1,9 +1,10 @@
 import { Page, Locator } from '@playwright/test';
+import { WebAppRoute, ROUTES } from '@constants';
 
 export class BasePage {
   private readonly globalLoader: Locator;
 
-  constructor(protected page: Page) {
+  constructor(public readonly page: Page) {
     // This selector targets common loader classes like .loading-mask or .loader
     // You can add multiple selectors separated by commas if the site uses different ones
     this.globalLoader = page.locator('div[x-show="isLoading"]').filter({ visible: true });
@@ -22,7 +23,7 @@ export class BasePage {
    * @param path - The URL path (e.g., '/login')
    * @param timeout - Optional custom timeout in milliseconds (defaults to 30s)
    */
-  public async open(path: string, timeout: number = 30000) {
+  public async open(path: WebAppRoute = ROUTES.HOME, timeout: number = 30000) {
     // We pass the timeout to Playwright's goto
     await this.page.goto(path, { timeout });
 

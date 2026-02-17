@@ -1,27 +1,28 @@
+// tests/auth/auth.setup.ts
 import { test as setup } from '@fixtures/baseTest';
 import { getCredentialForWorker } from '../../src/utils/user-manager';
 import path from 'path';
+import { ROUTES } from 'src/constants/routes';
 
-const MAX_WORKERS = process.env.CI ? 4 : 1; // Number of unique accounts per platform
+const authDir = path.join(process.cwd(), '.auth');
 
-// --- WEB SETUP ---
-for (let i = 0; i < MAX_WORKERS; i++) {
-  setup(`authenticate web user ${i}`, { tag: '@web-auth' }, async ({ webHomePage, page }) => {
-    const user = getCredentialForWorker(i, 'web');
-    const storagePath = path.join('.auth', `web-user-${i}.json`);
+// WEB AUTH SETUP
+setup('authenticate web users', { tag: '@web-auth' }, async ({ webLoginPage }, testInfo) => {
+  const workerIndex = testInfo.workerIndex;
+  const user = getCredentialForWorker(workerIndex, 'web');
+  const authFile = path.join(authDir, `web-user-${workerIndex}.json`);
+  await webLoginPage.open(ROUTES.LOGIN);
+  await webLoginPage.login(user.email, user.password);
+  await webLoginPage.page.context().storageState({ path: authFile });
+});
 
-    await webHomePage.loginUser(user.email!, user.pass!);
-    await page.context().storageState({ path: storagePath });
-  });
-}
+// MOBILE AUTH SETUP (Same pattern)
+setup('authenticate mobile users', { tag: '@mobile-auth' }, async ({ webLoginPage }, testInfo) => {
+  const workerIndex = testInfo.workerIndex;
+  const user = getCredentialForWorker(workerIndex, 'mobile');
+  const authFile = path.join(authDir, `mobile-user-${workerIndex}.json`);
 
-// --- MOBILE SETUP ---
-for (let i = 0; i < MAX_WORKERS; i++) {
-  setup(`authenticate mobile user ${i}`, { tag: '@mobile-auth' }, async ({ webHomePage, page }) => {
-    const user = getCredentialForWorker(i, 'mobile');
-    const storagePath = path.join('.auth', `mobile-user-${i}.json`);
-
-    await webHomePage.loginUser(user.email!, user.pass!);
-    await page.context().storageState({ path: storagePath });
-  });
-}
+  await webLoginPage.open(ROUTES.LOGIN);
+  await webLoginPage.login(user.email, user.password);
+  await webLoginPage.page.context().storageState({ path: authFile });
+});

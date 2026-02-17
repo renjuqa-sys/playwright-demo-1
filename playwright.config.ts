@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
-import { TAGS } from './src/utils/tags';
+import { TAGS } from './src/constants/tags';
 import path from 'path';
 
 // Initialize dotenv
@@ -14,7 +14,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 1,
+  workers: process.env.CI ? 2 : 2,
   reporter: 'html',
   use: {
     baseURL: process.env.BASE_URL || 'https://www.demoblaze.com/',
@@ -23,12 +23,19 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
 
+  // -- The flow is validate-env --> setup (web/mobile) --> tests --> teardown (web/mobile) --
   projects: [
+    // ---VALIDATE ENV FILE FIRST ---
+    {
+      name: 'validate-env',
+      testMatch: /validate-env\.setup\.ts/,
+    },
     // --- WEB SETUP & TEARDOWN ---
     {
       name: 'setup-web',
       testMatch: /auth.setup.ts/,
       grep: /@web-auth/,
+      dependencies: ['validate-env'],
       teardown: 'teardown-web',
     },
     {
@@ -42,6 +49,7 @@ export default defineConfig({
       name: 'setup-mobile',
       testMatch: /auth.setup.ts/,
       grep: /@mobile-auth/,
+      dependencies: ['validate-env'],
       teardown: 'teardown-mobile',
     },
     {
