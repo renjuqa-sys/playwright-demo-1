@@ -3,11 +3,13 @@ import { WebAppRoute, ROUTES } from '@constants';
 
 export class BasePage {
   private readonly globalLoader: Locator;
+  protected readonly toastMessage: Locator;
 
   constructor(public readonly page: Page) {
     // This selector targets common loader classes like .loading-mask or .loader
     // You can add multiple selectors separated by commas if the site uses different ones
     this.globalLoader = page.locator('div[x-show="isLoading"]').filter({ visible: true });
+    this.toastMessage = page.getByRole('alert');
   }
 
   /**

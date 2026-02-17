@@ -1,25 +1,27 @@
 import { test as base } from '@playwright/test';
-import { WebHomePage, WebProductDetailsPage, WebSearchResultsPage, WebLoginPage } from '@pages/web';
+import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
 import path from 'path';
+import { translate } from '@utils/i118n';
 // ... import other pages
 
 type MyFixtures = {
-  webHomePage: WebHomePage;
   webLoginPage: WebLoginPage;
-  webSearchResultsPage: WebSearchResultsPage;
-  webProductDetailsPage: WebProductDetailsPage;
+  webCataloguePage: WebCataloguePage;
+  webProductPage: WebProductPage;
+
+  t: (key: string, count?: number) => string;
 };
 
 export const test = base.extend<MyFixtures>({
   storageState: async ({}, use, testInfo) => {
     // This fixture handles authentication state for tests that require it, i.e. those project names that include 'member'. It loads a pre-saved storage state from a file based on the worker index, which allows for parallel test execution with different user accounts.
     if (testInfo.project.name.includes('member')) {
-      const index = testInfo.workerIndex;
+      // Must use the SAME math as the setup
+      const shardIndex = process.env.TEST_SHARD_INDEX ? parseInt(process.env.TEST_SHARD_INDEX) : 1;
+      const workersPerShard = 2;
+      const globalIndex = (shardIndex - 1) * workersPerShard + testInfo.parallelIndex;
 
-      // Logic for 2 shards x 2 workers = 4 users
-      // This index will be 0 or 1 on each machine
-      const fileName = `.auth/web-user-${index}.json`;
-
+      const fileName = `.auth/web-user-${globalIndex}.json`;
       await use(path.join(process.cwd(), fileName));
     }
     // For non-authenticated tests, we simply use an undefined storage state, which means the browser will start without any pre-set cookies or local storage.
@@ -27,17 +29,17 @@ export const test = base.extend<MyFixtures>({
       await use(undefined);
     }
   },
-  webHomePage: async ({ page }, use) => {
-    await use(new WebHomePage(page));
+  t: async ({}, use) => {
+    await use((key: string, count?: number) => translate(key, count));
+  },
+  webCataloguePage: async ({ page }, use) => {
+    await use(new WebCataloguePage(page));
+  },
+  webProductPage: async ({ page }, use) => {
+    await use(new WebProductPage(page));
   },
   webLoginPage: async ({ page }, use) => {
     await use(new WebLoginPage(page));
-  },
-  webProductDetailsPage: async ({ page }, use) => {
-    await use(new WebProductDetailsPage(page));
-  },
-  webSearchResultsPage: async ({ page }, use) => {
-    await use(new WebSearchResultsPage(page));
   },
 });
 

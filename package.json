@@ -7,7 +7,7 @@
     "lint": "eslint . --ext .ts,.tsx,.js",
     "lint:fix": "eslint . --ext .ts,.tsx,.js --fix",
     "// --- LOCAL SCRIPTS ---": "",
-    "test": "npx playwright test",
+    "test": "npx playwright test --headed",
     "test:ui": "npx playwright test --ui",
     "format": "prettier --write .",
     "// --- LOCAL WEB SCRIPTS ---": "",

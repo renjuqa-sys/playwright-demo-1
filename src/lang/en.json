@@ -1,0 +1,10 @@
+{
+  "CART": {
+    "ITEM_COUNT_zero": "Your cart is empty",
+    "ITEM_COUNT_one": "There is 1 item in your cart",
+    "ITEM_COUNT_other": "There are {{count}} items in your cart"
+  },
+  "TOASTER": {
+    "PRODUCT_ADDED": "Product added to shopping cart."
+  }
+}

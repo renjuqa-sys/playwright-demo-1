@@ -14,13 +14,19 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 2,
-  reporter: 'html',
+  workers: process.env.CI ? 2 : 1,
+  reporter: [['html', { open: 'always' }]],
+  // globalTeardown: './tests/auth/global.teardown.ts',
   use: {
-    baseURL: process.env.BASE_URL || 'https://www.demoblaze.com/',
+    baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',
+    // Set the browser locale based on ENV
+    locale: process.env.APP_LOCALE || 'en-US',
+    timezoneId: 'Europe/Madrid', // Optional: match locale to timezone
+    // Crucial: Use data-test-id as the primary selector strategy
+    testIdAttribute: 'data-test',
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    trace: 'retain-on-failure',
   },
 
   // -- The flow is validate-env --> setup (web/mobile) --> tests --> teardown (web/mobile) --
@@ -36,7 +42,6 @@ export default defineConfig({
       testMatch: /auth.setup.ts/,
       grep: /@web-auth/,
       dependencies: ['validate-env'],
-      teardown: 'teardown-web',
     },
     {
       name: 'teardown-web',

@@ -5,14 +5,12 @@ export class WebLoginPage extends BasePage {
   private readonly emailInput: Locator;
   private readonly passwordInput: Locator;
   private readonly signInButton: Locator;
-  private readonly logoutButton: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.emailInput = page.getByPlaceholder('Email');
-    this.passwordInput = page.getByPlaceholder('Password');
-    this.signInButton = page.getByRole('button', { name: 'Sign In' });
-    this.logoutButton = page.getByRole('button', { name: 'Logout' });
+    this.emailInput = page.getByTestId('email');
+    this.passwordInput = page.getByTestId('password');
+    this.signInButton = page.getByTestId('login-submit');
   }
 
   public async login(email: string, pass: string) {
@@ -20,7 +18,7 @@ export class WebLoginPage extends BasePage {
     await this.passwordInput.fill(pass);
     await this.signInButton.click();
 
-    // Industry Standard: Wait for a post-login element to ensure session is set
-    await expect(this.logoutButton).toBeVisible();
+    // Check that sign in button is not visisble after login, which indicates a successful login.
+    await expect(this.signInButton).toBeHidden();
   }
 }
