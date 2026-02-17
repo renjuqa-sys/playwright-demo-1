@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
 
 export class WebProductPage extends BasePage {
@@ -11,8 +11,5 @@ export class WebProductPage extends BasePage {
 
   public async addToCart() {
     await this.addToCartButton.click();
-  }
-  public async verifySuccessMessage(expectedText: string) {
-    await expect(this.toastMessage).toHaveText(expectedText);
   }
 }

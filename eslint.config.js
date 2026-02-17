@@ -2,6 +2,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import playwrightPlugin from 'eslint-plugin-playwright';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import';
 
 export default [
   {
@@ -10,6 +11,14 @@ export default [
     plugins: {
       '@typescript-eslint': tsPlugin,
       playwright: playwrightPlugin,
+      import: importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json', // This tells ESLint to look at your aliases defined in tsconfig.json
+        },
+      },
     },
     languageOptions: {
       parser: tsParser,
@@ -21,7 +30,20 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       ...playwrightPlugin.configs.recommended.rules,
 
-      // Enforcing your "Private Locator" team standard
+      // --- ALIAS ENFORCEMENT RULES ---
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['src/constants/*', 'src/pages/*', 'src/fixtures/*', 'src/utils/*'],
+              message: 'Please use path aliases (e.g., @constants/tags) instead of relative paths or src/ paths.',
+            },
+          ],
+        },
+      ],
+
+      // Enforcing "Private Locator" team standard
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
         {

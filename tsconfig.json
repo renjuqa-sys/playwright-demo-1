@@ -11,11 +11,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    // Path aliases for cleaner imports
     "paths": {
-      "@pages/web": ["src/pages/web/"],
+      "@pages/web": ["src/pages/web/index.ts"], // The index.ts file that exports all page objects for web tests
+      "@pages/web/*": ["src/pages/web/*"], // For direct imports of specific page objects if needed
       "@fixtures/*": ["src/fixtures/*"],
       "@utils/*": ["src/utils/*"],
-      "@constants": ["src/constants/index.ts"]
+      "@constants/*": ["src/constants/*"]
     }
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "playwright.config.ts"],

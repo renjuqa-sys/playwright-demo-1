@@ -1,13 +1,19 @@
 import { test as base } from '@playwright/test';
-import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
 import path from 'path';
+import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
 import { translate } from '@utils/i118n';
+import { ROUTES } from '@constants/routes';
+import { TAGS } from '@constants/tags';
 // ... import other pages
 
 type MyFixtures = {
   webLoginPage: WebLoginPage;
   webCataloguePage: WebCataloguePage;
   webProductPage: WebProductPage;
+
+  //types for constants
+  routes: typeof ROUTES;
+  tags: typeof TAGS;
 
   t: (key: string, count?: number) => string;
 };
@@ -29,6 +35,14 @@ export const test = base.extend<MyFixtures>({
       await use(undefined);
     }
   },
+
+  routes: async ({}, use) => {
+    await use(ROUTES);
+  },
+  tags: async ({}, use) => {
+    await use(TAGS);
+  },
+
   t: async ({}, use) => {
     await use((key: string, count?: number) => translate(key, count));
   },

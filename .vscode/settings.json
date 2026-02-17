@@ -1,9 +1,12 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //to auto save and fix linting issues on save
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit"
   },
+  //to sugest non-relative import (alaises) based on the paths defined in tsconfig.json
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "eslint.validate": ["javascript", "typescript"]
 }

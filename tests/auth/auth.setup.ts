@@ -2,7 +2,7 @@
 import { test as setup } from '@fixtures/baseTest';
 import { getCredentialForWorker } from '../../src/utils/user-manager';
 import path from 'path';
-import { ROUTES } from 'src/constants/routes';
+import { ROUTES } from '@constants/routes';
 
 const authDir = path.join(process.cwd(), '.auth');
 
