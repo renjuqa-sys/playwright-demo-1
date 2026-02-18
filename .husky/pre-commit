@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Run validation scripts before comitting code. This includes type checking and linting to ensure code quality and catch potential issues early
+npm run validate || (echo '\n❌ COMMIT FAILED: Fix the red squiggles before committing.\n' && exit 1)
+
+# If validation passes, run lint-staged to only lint the files that are staged for commit instead of teh entire codebase
 npx lint-staged

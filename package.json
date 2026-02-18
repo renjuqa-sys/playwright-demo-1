@@ -1,11 +1,13 @@
 {
-  "name": "cfs_web_qa",
+  "name": "playwright-demo-1",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx,.js",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run typecheck && npm run lint",
     "// --- LOCAL SCRIPTS ---": "",
     "test": "npx playwright test --headed",
     "test:ui": "npx playwright test --ui",
@@ -47,7 +49,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "npx prettier --write",
-      "eslint --cache --quiet"
+      "eslint --fix --max-warnings=0"
     ]
   }
 }

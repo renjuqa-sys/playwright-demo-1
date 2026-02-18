@@ -30,6 +30,12 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       ...playwrightPlugin.configs.recommended.rules,
 
+      'prefer-const': 'warn', //Suggest using const for varaibles that are never reassigned after declaration
+      'no-console': 'warn', //Warn against using console.log and other console methods in production code
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], //Error on unused variables, but ignore those that start with an underscore (commonly used for intentionally unused parameters)
+      '@typescript-eslint/no-explicit-any': 'off', //Allow the use of the 'any' type in TypeScript, which can be useful in certain situations where type safety is not a concern or when dealing with third-party libraries that do not have type definitions.
+      'import/no-unresolved': 'error', // Specifically checks if an import can be found
+
       // --- ALIAS ENFORCEMENT RULES ---
       'no-restricted-imports': [
         'error',

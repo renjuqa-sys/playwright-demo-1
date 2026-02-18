@@ -1,5 +1,5 @@
 import { test, expect } from '@fixtures/baseTest';
-import { TAGS } from '@constants/tagsss';
+import { TAGS } from '@constants/tags';
 
 test('add item to cart', { tag: [TAGS.SMOKE, TAGS.AUTH] }, async ({ webCataloguePage, webProductPage, t, routes }) => {
   await webCataloguePage.open(routes.HOME);
