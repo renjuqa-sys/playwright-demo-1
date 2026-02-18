@@ -22,9 +22,11 @@ export const test = base.extend<MyFixtures>({
   storageState: async ({}, use, testInfo) => {
     // This fixture handles authentication state for tests that require it, i.e. those project names that include 'member'. It loads a pre-saved storage state from a file based on the worker index, which allows for parallel test execution with different user accounts.
     if (testInfo.project.name.includes('member')) {
-      // Must use the SAME math as the setup
+      // Get Shard Index (defaults to 1 locally)
       const shardIndex = process.env.TEST_SHARD_INDEX ? parseInt(process.env.TEST_SHARD_INDEX) : 1;
-      const workersPerShard = 2;
+      // get number of workers per shard  (defaults to 1 locally))
+      const workersPerShard = testInfo.config.workers || 1;
+      // calculate global index for user assignment across shards and its workers => (shard - 1) * workers_per_shard + local_worker_index
       const globalIndex = (shardIndex - 1) * workersPerShard + testInfo.parallelIndex;
 
       const fileName = `.auth/web-user-${globalIndex}.json`;

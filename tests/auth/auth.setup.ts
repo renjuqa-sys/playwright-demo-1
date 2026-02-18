@@ -8,16 +8,19 @@ const authDir = path.join(process.cwd(), '.auth');
 
 // WEB AUTH SETUP
 setup('authenticate web users', { tag: '@web-auth' }, async ({ webLoginPage }, testInfo) => {
-  // 1. Calculate Global Index
+  // Calculate Global Index
+  // Get Shard Index (defaults to 1 locally)
   const shardIndex = process.env.TEST_SHARD_INDEX ? parseInt(process.env.TEST_SHARD_INDEX) : 1;
-  const workersPerShard = 2;
+  // get number of workers per shard  (defaults to 1 locally))
+  const workersPerShard = testInfo.config.workers || 1;
+  // calculate global index for user assignment across shards and its workers => (shard - 1) * workers_per_shard + local_worker_index
   const globalIndex = (shardIndex - 1) * workersPerShard + testInfo.parallelIndex;
 
-  // 2. Get credentials and define file path
+  // Get credentials and define file path
   const user = getCredentialForWorker(globalIndex, 'web');
   const authFile = path.join(path.join(process.cwd(), '.auth'), `web-user-${globalIndex}.json`);
 
-  // 3. Perform login
+  // Perform login
   await webLoginPage.open(ROUTES.LOGIN);
   await webLoginPage.login(user.email, user.password);
   await webLoginPage.page.context().storageState({ path: authFile });
