@@ -4,7 +4,7 @@ import { TAGS } from '@constants/tags';
 test('add item to cart', { tag: [TAGS.SMOKE, TAGS.AUTH] }, async ({ webCataloguePage, webProductPage, t, routes }) => {
   await webCataloguePage.open(routes.HOME);
   await webCataloguePage.navBar.verifyUserIsLoggedIn();
-  await webCataloguePage.selectProduct('01KHP8Q3TS9EZCW1GP9S4JTSF5');
+  await webCataloguePage.selectProduct('Combination Pliers');
   await webProductPage.addToCart();
   await webProductPage.verifyToasterMessage(t('TOASTER.PRODUCT_ADDED'));
   expect(true).toBe(true);
