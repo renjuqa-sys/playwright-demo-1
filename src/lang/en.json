@@ -5,6 +5,6 @@
     "ITEM_COUNT_other": "There are {{count}} items in your cart"
   },
   "TOASTER": {
-    "PRODUCT_ADDED": "Product added to shopping cart."
+    "PRODUCT_ADDED": " Product added to shopping cart. "
   }
 }

@@ -20,7 +20,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',
     // Set the browser locale based on ENV
-    locale: process.env.APP_LOCALE || 'en-US',
+    locale: process.env.APP_LOCALE || 'en',
     timezoneId: 'Europe/Madrid', // Optional: match locale to timezone
     // Crucial: Use data-test-id as the primary selector strategy
     testIdAttribute: 'data-test',
