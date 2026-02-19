@@ -79,6 +79,7 @@ export default defineConfig({
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
+        storageState: `.auth/customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
 
@@ -97,6 +98,19 @@ export default defineConfig({
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
+        storageState: `.auth/customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
+      },
+    },
+
+    // --- WEB ADMIN (EXAMPLE OF ROLE BASED TESTING) ----
+    {
+      name: 'web-admin',
+      testDir: './tests/web',
+      grep: /@admin/,
+      dependencies: ['setup-web'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: `.auth/admin-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
 
