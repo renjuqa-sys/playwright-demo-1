@@ -1,13 +1,19 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { WebAppRoute, ROUTES } from '@constants/routes';
+import { NavigationBar } from './navigation-bar.page';
 
 export class BasePage {
-  private readonly globalLoader: Locator;
-  private readonly toastMessage: Locator;
+  // common LOCATORS used across multiple pages
+  protected readonly globalLoader: Locator;
+  protected readonly toastMessage: Locator;
+
+  // common COMPONENTS like header, footer, navBar etc
+  public readonly navBar: NavigationBar;
 
   constructor(public readonly page: Page) {
     this.globalLoader = page.locator('div[x-show="isLoading"]').filter({ visible: true });
     this.toastMessage = page.getByRole('alert');
+    this.navBar = new NavigationBar(page);
   }
 
   /**

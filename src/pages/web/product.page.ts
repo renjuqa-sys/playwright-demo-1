@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
 
 export class WebProductPage extends BasePage {
-  private readonly addToCartButton: Locator;
+  protected readonly addToCartButton: Locator;
 
   constructor(page: Page) {
     super(page);

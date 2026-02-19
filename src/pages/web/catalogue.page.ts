@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
 
 export class WebCataloguePage extends BasePage {
-  private readonly productByName = (name: string) => this.page.getByTestId(`product-${name}`);
+  protected readonly productByName = (name: string) => this.page.getByTestId(`product-${name}`);
 
   constructor(page: Page) {
     super(page);
