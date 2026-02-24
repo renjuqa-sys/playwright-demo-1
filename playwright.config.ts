@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!process.env.CI, // Fail if test.only is accidentally left in the code when running in CI
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : 1,
   reporter: [

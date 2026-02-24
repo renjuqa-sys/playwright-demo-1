@@ -4,5 +4,11 @@
 # Run validation scripts before comitting code. This includes type checking and linting to ensure code quality and catch potential issues early
 npm run validate || (echo '\n❌ COMMIT FAILED: Fix the red squiggles before committing.\n' && exit 1)
 
+# Search for .only( in spec files. If found, exit with error.
+if grep -rE "test\.only\(|describe\.only\(" tests/; then
+  echo "❌ Error: You are trying to commit a focused test (.only). Please remove it!"
+  exit 1
+fi
+
 # If validation passes, run lint-staged to only lint the files that are staged for commit instead of teh entire codebase
 npx lint-staged
