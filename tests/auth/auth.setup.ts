@@ -27,7 +27,7 @@ import { UserRole } from '@constants/user-role';
 //   await webLoginPage.page.context().storageState({ path: authFile });
 // });
 
-setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLoginPage, page }) => {
+setup('Authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLoginPage, page }) => {
   const workerIndex = parseInt(process.env.TEST_PARALLEL_INDEX || '0');
 
   // Utility to handle the repetitive "Login and Save" flow
@@ -61,4 +61,4 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
 });
 
 // MOBILE AUTH SETUP (Same pattern)
-setup('authenticate mobile users', { tag: '@mobile-auth' }, async ({}) => {});
+setup('Authenticate mobile users', { tag: '@mobile-auth' }, async ({}) => {});

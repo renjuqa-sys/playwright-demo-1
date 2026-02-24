@@ -15,7 +15,17 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : 1,
-  reporter: [['html', { open: 'always' }]],
+  reporter: [
+    ['list'], // Concise dots in your terminal ( . for pass, F for fail)
+    [
+      'allure-playwright',
+      {
+        resultsDir: 'allure-results', // Folder where raw data is stored
+        detail: true, // Captures steps, screenshots, and traces
+      },
+    ],
+    ['html', { open: 'never' }], // (Optional) Standard HTML report as a backup
+  ],
   globalTeardown: './tests/auth/global.teardown.ts',
   use: {
     baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',

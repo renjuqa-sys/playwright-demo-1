@@ -12,3 +12,12 @@ playwright/.cache/
 
 # Linting
 .eslintcache
+
+# Playwright AI Artifacts
+.playwright-cli/
+.github/agents/journal/
+specs/*.log
+
+# Allure Reports
+allure-results/
+allure-report/
