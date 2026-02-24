@@ -16,7 +16,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : 1,
   reporter: [['html', { open: 'always' }]],
-  // globalTeardown: './tests/auth/global.teardown.ts',
+  globalTeardown: './tests/auth/global.teardown.ts',
   use: {
     baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',
     // Set the browser locale based on ENV
@@ -42,6 +42,7 @@ export default defineConfig({
       testMatch: /.*\/auth\.setup\.ts$/,
       grep: /@web-auth/,
       dependencies: ['validate-env'],
+      teardown: 'teardown-web',
     },
     {
       name: 'teardown-web',

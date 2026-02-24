@@ -7,7 +7,7 @@ import path from 'path';
 teardown('cleanup web auth states', { tag: '@web-cleanup' }, async () => {
   const authDir = path.join(process.cwd(), '.auth');
   if (fs.existsSync(authDir)) {
-    const files = fs.readdirSync(authDir).filter((f) => f.startsWith('web-customer-') || f.startsWith('web-admin-'));
+    const files = fs.readdirSync(authDir).filter((f) => f.startsWith('web-'));
     files.forEach((file) => fs.unlinkSync(path.join(authDir, file)));
     console.log(`Cleaned up ${files.length} web auth files.`);
   }
@@ -17,7 +17,7 @@ teardown('cleanup web auth states', { tag: '@web-cleanup' }, async () => {
 teardown('cleanup mobile auth states', { tag: '@mobile-cleanup' }, async () => {
   const authDir = path.join(process.cwd(), '.auth');
   if (fs.existsSync(authDir)) {
-    const files = fs.readdirSync(authDir).filter((f) => f.startsWith('mobile-user'));
+    const files = fs.readdirSync(authDir).filter((f) => f.startsWith('mobile-'));
     files.forEach((file) => fs.unlinkSync(path.join(authDir, file)));
     console.log(`Cleaned up ${files.length} mobile auth files.`);
   }

@@ -4,7 +4,7 @@ import { test } from '@fixtures/baseTest';
 
 export class WebProductPage extends BasePage {
   private get addToCartButton(): Locator {
-    return this.page.locator('[data-test="add-to-cart"]');
+    return this.page.getByTestId('add-to-cart');
   }
   constructor(page: Page) {
     super(page);

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // tests/auth/auth.setup.ts
 import { test as setup } from '@fixtures/baseTest';
 import { getCredentialForRole } from '../../src/utils/user-manager';
@@ -29,30 +30,34 @@ import { UserRole } from '@constants/user-role';
 setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLoginPage, page }) => {
   const workerIndex = parseInt(process.env.TEST_PARALLEL_INDEX || '0');
 
-  // --- SETUP CUSTOMER SESSION ---
-  const customer = getCredentialForRole(UserRole.CUSTOMER, workerIndex);
-  await webLoginPage.open(ROUTES.LOGIN);
-  await webLoginPage.login(customer.email, customer.password);
-  await webLoginPage.waitForLoadersToDisappear();
-  await webLoginPage.navBar.verifyUserIsLoggedIn();
-  await page.context().storageState({
-    path: `.auth/web-customer-${workerIndex}.json`,
+  // Utility to handle the repetitive "Login and Save" flow
+  const authenticateRole = async (role: UserRole, fileName: string) => {
+    const credentials = getCredentialForRole(role, workerIndex);
+
+    await setup.step(`Authenticate as ${role}`, async () => {
+      await webLoginPage.open(ROUTES.LOGIN);
+      await webLoginPage.login(credentials.email, credentials.password);
+      await webLoginPage.navBar.verifyUserIsLoggedIn();
+      await page.context().storageState({ path: `.auth/${fileName}-${workerIndex}.json` });
+      console.log(`Saved auth state for role ${role} in file ${fileName}-${workerIndex}.json.`);
+    });
+  };
+
+  // Setup customer sessiom
+  await authenticateRole(UserRole.CUSTOMER, 'web-customer');
+
+  // 2. Clear and Setup Admin (Gold Standard: ensure full isolation)
+  await setup.step('Clear session for next role', async () => {
+    await page.context().clearCookies(); //  Clear state to ensure clean login for admin
+    await page.evaluate(() => {
+      window.localStorage.clear(); // Clear local storage
+      window.sessionStorage.clear(); // Clear sesssion storage as well, just to eb safe
+    });
+    console.log(`Cleared session for next role setup.`);
   });
 
-  // --- SETUP ADMIN SESSION ---
-  await page.context().clearCookies(); //  Clear state to ensure clean login for admin
-  await page.evaluate(() => {
-    window.localStorage.clear(); // Clear local storage
-    window.sessionStorage.clear(); // Clear sesssion storage as well, just to eb safe
-  });
-  // 2. FORCE navigation back to login page to see the email field again
-  await webLoginPage.open(ROUTES.LOGIN);
-  const admin = getCredentialForRole(UserRole.ADMIN, workerIndex);
-  await webLoginPage.login(admin.email, admin.password);
-  await webLoginPage.navBar.verifyUserIsLoggedIn();
-  await page.context().storageState({
-    path: `.auth/web-admin-${workerIndex}.json`,
-  });
+  // Setup admin sessiom
+  await authenticateRole(UserRole.ADMIN, 'web-admin');
 });
 
 // MOBILE AUTH SETUP (Same pattern)
