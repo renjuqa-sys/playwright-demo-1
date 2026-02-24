@@ -33,6 +33,7 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   const customer = getCredentialForRole(UserRole.CUSTOMER, workerIndex);
   await webLoginPage.open(ROUTES.LOGIN);
   await webLoginPage.login(customer.email, customer.password);
+  await webLoginPage.waitForLoadersToDisappear();
   await webLoginPage.navBar.verifyUserIsLoggedIn();
   await page.context().storageState({
     path: `.auth/web-customer-${workerIndex}.json`,

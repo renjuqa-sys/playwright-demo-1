@@ -7,5 +7,5 @@ test('add item to cart', { tag: [TAGS.SMOKE, TAGS.AUTH] }, async ({ webCatalogue
   await webCataloguePage.selectProduct('Combination Pliers');
   await webProductPage.addToCart();
   await webProductPage.verifyToasterMessage(t('TOASTER.PRODUCT_ADDED'));
-  expect(true).toBe(true);
+  await expect(webProductPage.page).toHaveURL(/.*product/);
 });

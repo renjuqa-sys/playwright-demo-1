@@ -1,28 +1,31 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page, expect, test } from '@playwright/test';
 import { WebAppRoute, ROUTES } from '@constants/routes';
 import { NavigationBar } from './navigation-bar.page';
 
 export class BasePage {
-  // common LOCATORS used across multiple pages
-  protected readonly globalLoader: Locator;
-  protected readonly toastMessage: Locator;
-
   // common COMPONENTS like header, footer, navBar etc
   public readonly navBar: NavigationBar;
 
   constructor(public readonly page: Page) {
-    this.globalLoader = page.locator('div[x-show="isLoading"]').filter({ visible: true });
-    this.toastMessage = page.getByRole('alert');
     this.navBar = new NavigationBar(page);
+  }
+
+  private get globalLoader(): Locator {
+    return this.page.locator('div[x-show="isLoading"]').filter({ visible: true });
+  }
+
+  private get toastMessage(): Locator {
+    return this.page.getByRole('alert');
   }
 
   /**
    * Reusable function to wait until all loading icons are hidden or removed from the DOM.
    */
   public async waitForLoadersToDisappear(timeout: number = 30000) {
-    await this.globalLoader.waitFor({ state: 'hidden', timeout });
+    await test.step('Wait for global loaders to disappear', async () => {
+      await this.globalLoader.waitFor({ state: 'hidden', timeout });
+    });
   }
-
   /**
    * Centralized navigation method.
    * It appends the path to the baseURL from playwright.config.ts
@@ -30,11 +33,15 @@ export class BasePage {
    * @param timeout - Optional custom timeout in milliseconds (defaults to 30s)
    */
   public async open(path: WebAppRoute = ROUTES.HOME, timeout: number = 30000) {
-    await this.page.goto(path, { timeout });
-    await this.waitForLoadersToDisappear(timeout);
+    await test.step(`Open page: ${path}`, async () => {
+      await this.page.goto(path, { timeout });
+      await this.waitForLoadersToDisappear(timeout);
+    });
   }
 
   public async verifyToasterMessage(expectedText: string) {
-    await expect(this.toastMessage).toHaveText(expectedText);
+    await test.step(`Verify toaster message: "${expectedText}"`, async () => {
+      await expect(this.toastMessage).toHaveText(expectedText);
+    });
   }
 }
