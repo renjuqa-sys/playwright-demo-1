@@ -3,7 +3,7 @@ import { TAGS } from '@constants/tags';
 
 // eslint-disable-next-line playwright/no-focused-test
 test.only(
-  'Add item to cart1',
+  'Add item to cart11',
   { tag: [TAGS.SMOKE, TAGS.AUTH] },
   async ({ webCataloguePage, webProductPage, t, routes }) => {
     await webCataloguePage.open(routes.HOME);
