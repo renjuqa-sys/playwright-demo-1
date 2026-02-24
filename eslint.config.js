@@ -41,6 +41,7 @@ export default [
       // 'playwright/no-raw-locators': 'error', //Warn against using raw locators like css selectors or XPath in Playwright tests, encouraging the use of more robust locator strategies (e.g., data-testid attributes) for better test maintainability and reliability.
       'playwright/prefer-native-locators': 'error', //This will error if someone uses page.locator('button') instead of the more resilient page.getByRole('button')
       'playwright/missing-playwright-await': 'error', // Ensure all actions are awaited to prevent unhadled promise rejections
+      'playwright/no-focused-test': 'error', //Prevent commitetd code from containing focused tests (e.g. test.only)
 
       // --- ALIAS ENFORCEMENT RULES ---
       'no-restricted-imports': [
