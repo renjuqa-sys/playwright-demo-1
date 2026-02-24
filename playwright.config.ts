@@ -79,7 +79,7 @@ export default defineConfig({
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
-        storageState: `.auth/customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
+        storageState: `.auth/web-customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
 
@@ -98,7 +98,7 @@ export default defineConfig({
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
-        storageState: `.auth/customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
+        storageState: `.auth/web-customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
 
@@ -110,7 +110,7 @@ export default defineConfig({
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
-        storageState: `.auth/admin-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
+        storageState: `.auth/web-admin-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
 

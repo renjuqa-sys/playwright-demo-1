@@ -35,7 +35,7 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   await webLoginPage.login(customer.email, customer.password);
   await webLoginPage.navBar.verifyUserIsLoggedIn();
   await page.context().storageState({
-    path: `.auth/customer-${workerIndex}.json`,
+    path: `.auth/web-customer-${workerIndex}.json`,
   });
 
   // --- SETUP ADMIN SESSION ---
@@ -50,7 +50,7 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   await webLoginPage.login(admin.email, admin.password);
   await webLoginPage.navBar.verifyUserIsLoggedIn();
   await page.context().storageState({
-    path: `.auth/admin-${workerIndex}.json`,
+    path: `.auth/web-admin-${workerIndex}.json`,
   });
 });
 
