@@ -34,32 +34,32 @@ export default defineConfig({
     // ---VALIDATE ENV FILE FIRST ---
     {
       name: 'validate-env',
-      testMatch: /validate-env\.setup\.ts/,
+      testMatch: /.*\/validate-env\.setup\.ts$/,
     },
     // --- WEB SETUP & TEARDOWN ---
     {
       name: 'setup-web',
-      testMatch: /auth.setup.ts/,
+      testMatch: /.*\/auth\.setup\.ts$/,
       grep: /@web-auth/,
       dependencies: ['validate-env'],
     },
     {
       name: 'teardown-web',
-      testMatch: /auth.teardown.ts/,
+      testMatch: /.*\/auth\.teardown\.ts$/,
       grep: /@web-cleanup/,
     },
 
     // --- MOBILE SETUP & TEARDOWN ---
     {
       name: 'setup-mobile',
-      testMatch: /auth.setup.ts/,
+      testMatch: /.*\/auth\.setup\.ts$/,
       grep: /@mobile-auth/,
       dependencies: ['validate-env'],
       teardown: 'teardown-mobile',
     },
     {
       name: 'teardown-mobile',
-      testMatch: /auth.teardown.ts/,
+      testMatch: /.*\/auth\.teardown\.ts$/,
       grep: /@mobile-cleanup/,
     },
 
