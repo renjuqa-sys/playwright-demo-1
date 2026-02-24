@@ -3,6 +3,8 @@
 //   const webUsers = JSON.parse(process.env.WEB_USERS || '[]');
 //   const mobileUsers = JSON.parse(process.env.MOBILE_USERS || '[]');
 
+import { UserRole } from '@constants/user-role';
+
 //   const users = platform === 'web' ? webUsers : mobileUsers;
 
 //   if (users.length === 0) {
@@ -13,7 +15,7 @@
 //   return users[index % users.length];
 // };
 
-export const getCredentialForRole = (role: 'admin' | 'customer', index: number) => {
+export const getCredentialForRole = (role: UserRole, index: number) => {
   // 1. Parse the web users from your .env
   const allWebUsers = JSON.parse(process.env.WEB_USERS || '[]');
 
@@ -27,7 +29,7 @@ export const getCredentialForRole = (role: 'admin' | 'customer', index: number) 
   const customerPool = allWebUsers.slice(1);
 
   // 3. Select the pool based on the requested role
-  const selectedPool = role === 'admin' ? adminPool : customerPool;
+  const selectedPool = role === UserRole.ADMIN ? adminPool : customerPool;
 
   if (selectedPool.length === 0) {
     throw new Error(`No users found for role: ${role}`);

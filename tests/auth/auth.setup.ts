@@ -2,6 +2,7 @@
 import { test as setup } from '@fixtures/baseTest';
 import { getCredentialForRole } from '../../src/utils/user-manager';
 import { ROUTES } from '@constants/routes';
+import { UserRole } from '@constants/user-role';
 
 // const authDir = path.join(process.cwd(), '.auth');
 // WEB AUTH SETUP
@@ -29,7 +30,7 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   const workerIndex = parseInt(process.env.TEST_PARALLEL_INDEX || '0');
 
   // --- SETUP CUSTOMER SESSION ---
-  const customer = getCredentialForRole('customer', workerIndex);
+  const customer = getCredentialForRole(UserRole.CUSTOMER, workerIndex);
   await webLoginPage.open(ROUTES.LOGIN);
   await webLoginPage.login(customer.email, customer.password);
   await webLoginPage.navBar.verifyUserIsLoggedIn();
@@ -38,12 +39,14 @@ setup('authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   });
 
   // --- SETUP ADMIN SESSION ---
-  // 1. Clear state
-  await page.context().clearCookies();
-  await page.evaluate(() => window.localStorage.clear()); // Clear local storage too
+  await page.context().clearCookies(); //  Clear state to ensure clean login for admin
+  await page.evaluate(() => {
+    window.localStorage.clear(); // Clear local storage
+    window.sessionStorage.clear(); // Clear sesssion storage as well, just to eb safe
+  });
   // 2. FORCE navigation back to login page to see the email field again
   await webLoginPage.open(ROUTES.LOGIN);
-  const admin = getCredentialForRole('admin', workerIndex);
+  const admin = getCredentialForRole(UserRole.ADMIN, workerIndex);
   await webLoginPage.login(admin.email, admin.password);
   await webLoginPage.navBar.verifyUserIsLoggedIn();
   await page.context().storageState({

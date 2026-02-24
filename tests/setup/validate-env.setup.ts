@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { test as setup } from '@playwright/test';
 
 setup('Validate Environment Variables', async () => {

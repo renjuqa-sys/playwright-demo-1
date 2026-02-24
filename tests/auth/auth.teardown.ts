@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { test as teardown } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
