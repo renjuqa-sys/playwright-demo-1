@@ -30,11 +30,17 @@ export default [
       ...tsPlugin.configs.recommended.rules,
       ...playwrightPlugin.configs.recommended.rules,
 
+      // --- GENERAL CODE QUALITY RULES ---
       'prefer-const': 'warn', //Suggest using const for varaibles that are never reassigned after declaration
       'no-console': 'warn', //Warn against using console.log and other console methods in production code
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], //Error on unused variables, but ignore those that start with an underscore (commonly used for intentionally unused parameters)
       '@typescript-eslint/no-explicit-any': 'off', //Allow the use of the 'any' type in TypeScript, which can be useful in certain situations where type safety is not a concern or when dealing with third-party libraries that do not have type definitions.
       'import/no-unresolved': 'error', // Specifically checks if an import can be found
+
+      // --- MODERN PLAYWRIGHT STANDARDS ---
+      // 'playwright/no-raw-locators': 'error', //Warn against using raw locators like css selectors or XPath in Playwright tests, encouraging the use of more robust locator strategies (e.g., data-testid attributes) for better test maintainability and reliability.
+      'playwright/prefer-native-locators': 'error', //This will error if someone uses page.locator('button') instead of the more resilient page.getByRole('button')
+      'playwright/missing-playwright-await': 'error', // Ensure all actions are awaited to prevent unhadled promise rejections
 
       // --- ALIAS ENFORCEMENT RULES ---
       'no-restricted-imports': [
@@ -49,7 +55,7 @@ export default [
         },
       ],
 
-      // Enforcing "Private Locator" team standard
+      // --- CODE STYLE ENFORCEMENT RULES ---
       '@typescript-eslint/explicit-member-accessibility': [
         'error',
         {
