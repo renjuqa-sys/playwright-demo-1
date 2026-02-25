@@ -1,4 +1,4 @@
-import { Locator, Page, expect, test } from '@playwright/test';
+import { Locator, Page, test } from '@playwright/test';
 import { WebAppRoute, ROUTES } from '@constants/routes';
 import { NavigationBar } from './navigation-bar.page';
 
@@ -12,10 +12,6 @@ export class BasePage {
 
   private get globalLoader(): Locator {
     return this.page.locator('div[x-show="isLoading"]').filter({ visible: true });
-  }
-
-  private get toastMessage(): Locator {
-    return this.page.getByRole('alert');
   }
 
   /**
@@ -36,12 +32,6 @@ export class BasePage {
     await test.step(`Open page: ${path}`, async () => {
       await this.page.goto(path, { timeout });
       await this.waitForLoadersToDisappear(timeout);
-    });
-  }
-
-  public async verifyToasterMessage(expectedText: string) {
-    await test.step(`Verify toaster message: "${expectedText}"`, async () => {
-      await expect(this.toastMessage).toHaveText(expectedText);
     });
   }
 }

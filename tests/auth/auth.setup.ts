@@ -3,7 +3,7 @@
 import { test as setup } from '@fixtures/baseTest';
 import { getCredentialForRole } from '../../src/utils/user-manager';
 import { ROUTES } from '@constants/routes';
-import { UserRole } from '@constants/user-role';
+import { USER_ROLES, UserRole } from '@constants/user-role';
 
 // const authDir = path.join(process.cwd(), '.auth');
 // WEB AUTH SETUP
@@ -44,7 +44,7 @@ setup('Authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   };
 
   // Setup customer sessiom
-  await authenticateRole(UserRole.CUSTOMER, 'web-customer');
+  await authenticateRole(USER_ROLES.CUSTOMER, 'web-customer');
 
   // 2. Clear and Setup Admin (Gold Standard: ensure full isolation)
   await setup.step('Clear session for next role', async () => {
@@ -57,7 +57,7 @@ setup('Authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLog
   });
 
   // Setup admin sessiom
-  await authenticateRole(UserRole.ADMIN, 'web-admin');
+  await authenticateRole(USER_ROLES.ADMIN, 'web-admin');
 });
 
 // MOBILE AUTH SETUP (Same pattern)

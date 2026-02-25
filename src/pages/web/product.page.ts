@@ -1,8 +1,12 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
 import { test } from '@fixtures/baseTest';
+import { WithToaster } from '../common/traits/withToaster';
+import { compose } from '@utils/compose';
 
-export class WebProductPage extends BasePage {
+const PageWithTraits = compose(BasePage, WithToaster);
+
+export class WebProductPage extends PageWithTraits {
   private get addToCartButton(): Locator {
     return this.page.getByTestId('add-to-cart');
   }

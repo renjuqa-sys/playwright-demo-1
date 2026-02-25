@@ -6,17 +6,19 @@ import path from 'path';
 // Initialize dotenv
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
+const isCI = !!process.env.CI;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI, // Fail if test.only is accidentally left in the code when running in CI
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 1,
+  forbidOnly: !!isCI, // Fail if test.only is accidentally left in the code when running in CI
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 2 : 1,
   reporter: [
-    ['list'], // Concise dots in your terminal ( . for pass, F for fail)
+    ['list', { printSteps: false }], // Summary: shows the list ONLY at the end, without step-by-step noise
     [
       'allure-playwright',
       {
@@ -34,9 +36,9 @@ export default defineConfig({
     timezoneId: 'Europe/Madrid', // Optional: match locale to timezone
     // Crucial: Use data-test-id as the primary selector strategy
     testIdAttribute: 'data-test',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: isCI ? 'retain-on-failure' : 'on',
+    video: isCI ? 'retain-on-failure' : 'off',
+    screenshot: isCI ? 'only-on-failure' : 'off',
   },
 
   // -- The flow is validate-env --> setup (web/mobile) --> tests --> teardown (web/mobile) --
