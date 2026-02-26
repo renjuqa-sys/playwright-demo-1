@@ -1,0 +1,12 @@
+---
+description: Guidelines for writing Playwright test specs and using fixtures
+globs: tests/**/*.test.ts
+---
+
+## Testing guidelines
+
+- **Tag tests intentionally**: Always tag tests with the appropriate `TAGS` (e.g. `SMOKE`, `REGRESSION`, `AUTH`) so they participate correctly in filtered runs.
+- **Respect auth projects**: Member/admin tests should rely on the auth setup projects and `.auth/*.json` storage state files rather than re-logging in inline.
+- **Keep tests focused**: Single test should validate one coherent behaviour (e.g. "add item to cart" or "contact header visible"), delegating UI details to page objects.
+- **Isolation**: Each test must be independent. Use fixtures for setup instead of large `beforeEach` hooks when possible.
+- **Separation of Concerns**: Page Objects handle "How" (locators/actions). Tests handle "What" (assertions). Keep `expect()` inside `.test` files only.

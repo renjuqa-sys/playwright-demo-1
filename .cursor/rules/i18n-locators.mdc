@@ -1,0 +1,51 @@
+---
+description: Enforces type-safe i18n for locators in Page Objects and prevents incorrect getter usage for dynamic elements
+globs: src/pages/**/*.ts
+---
+
+# i18n & Dynamic Locator Rules
+
+## 1. Core Rule
+All user-facing text in locators MUST be parameterized using the type-safe `this.t()` utility inherited from `BasePage`.
+
+## 2. Static vs. Dynamic Accessors
+- **Static Locators (No Parameters)**: MUST use `private get` accessors.
+- **Dynamic Locators (With Parameters)**: MUST use **methods**. 
+- **STRICT PROHIBITION**: NEVER use a `get` accessor for a locator that requires a parameter (e.g., `get product(name)` is invalid TypeScript/Architecture).
+
+## 3. Selector Priority
+1. **Primary**: `page.getByRole('role', { name: this.t('KEY') })` (Accessibility First).
+2. **Secondary**: `page.getByLabel(this.t('KEY'))` or `page.getByPlaceholder(this.t('KEY'))`.
+3. **Fallback**: `page.getByTestId(this.t('KEY'))` ONLY if no accessible role exists (e.g., generic icons).
+4. **PROHIBITED**: Never use CSS classes (e.g., `.btn-primary`) or XPaths.
+
+## 4. Parameterized Locators (Dynamic Data)
+When creating methods for dynamic elements (e.g., products in a list):
+- If the text is **Content** (SKUs, IDs, Names): Pass the raw string to the filter.
+- If the text is **Localized UI** (Category names, Statuses): Pass a **Translation Key** and wrap it in `this.t()`.
+
+## 5. Examples
+
+### ✅ Correct: Static Getter
+private get loginBtn() {
+  return this.page.getByRole('button', { name: this.t('AUTH.LOGIN_BTN') });
+}
+
+### ✅ Correct: Dynamic Method (Localized)
+/** Finds a category link using a localized key */
+private categoryLink(key: string) {
+  return this.page.getByRole('link', { name: this.t(key) });
+}
+
+### ✅ Correct: Dynamic Method (Data Content)
+/** Finds a product by its specific database name */
+private productByName(name: string) {
+  return this.page.getByTestId('product-item').filter({ hasText: name });
+}
+
+### ❌ Incorrect Patterns
+// Hardcoded string
+private get submitBtn() { return this.page.getByText('Submit'); } 
+
+// Parameter in a getter (Invalid)
+private get item(name: string) { return this.page.getByText(name); }
