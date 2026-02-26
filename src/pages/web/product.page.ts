@@ -8,7 +8,7 @@ const PageWithTraits = compose(BasePage, WithToaster);
 
 export class WebProductPage extends PageWithTraits {
   private get addToCartButton(): Locator {
-    return this.page.getByTestId('add-to-cart');
+    return this.page.getByRole('button', { name: this.t('BUTTONS.ADD_TO_CART') });
   }
   constructor(page: Page) {
     super(page);

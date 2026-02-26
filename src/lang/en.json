@@ -6,5 +6,8 @@
   },
   "TOASTER": {
     "PRODUCT_ADDED": " Product added to shopping cart. "
+  },
+  "BUTTONS": {
+    "ADD_TO_CART": "Add to cart"
   }
 }

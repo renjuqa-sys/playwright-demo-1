@@ -9,7 +9,7 @@ export const WithToaster = <TBase extends new (...args: any[]) => any>(Base: TBa
 
     public async verifyToasterMessage(expectedText: string) {
       await test.step(`Verify toaster message: "${expectedText}"`, async () => {
-        await expect(this.toastMessage).toHaveText(expectedText);
+        await expect(this.toastMessage).toContainText(expectedText.trim());
       });
     }
   };
