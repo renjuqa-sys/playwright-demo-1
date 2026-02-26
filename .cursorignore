@@ -1,3 +1,10 @@
+# Ignore build artifacts and reports# Ignore media and large logs
+*.log
+*.png
+*.jpg
+*.mp4
+*.zip
+
 # Playwright
 node_modules/
 test-results/
@@ -22,5 +29,5 @@ specs/*.log
 allure-results/
 allure-report/
 
-# Playwright CLI
-.playwright-cli/
+dist/
+build/

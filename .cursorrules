@@ -1,0 +1,50 @@
+# Playwright SDET Gold Standard Rules
+
+## Role
+
+- You are an expert SDET. Maintain high-quality, professional automation code.
+
+## Project overview & features
+
+- **Playwright multi-project setup**: `playwright.config.ts` defines projects for web and mobile, with dedicated smoke and regression suites plus role-based admin projects.
+- **Tagged test strategy**: Central `TAGS` constants (`@smoke`, `@regression`, `@auth`, priorities, etc.) drive `grep`/`grepInvert` filters in Playwright projects.
+- **Auth setup & teardown flow**: `validate-env` → web/mobile auth setup (`auth.setup.ts`) → tests → web/mobile teardown (`auth.teardown.ts` and `global.teardown.ts`).
+- **Role-based authentication**: `user-manager` and `USER_ROLES` manage admin vs customer credentials and generate per-worker `.auth/*.json` storage states.
+- **Page Object Model (POM)**: Web pages live under `src/pages/web`, extend `BasePage`, and centralise navigation and shared UI components.
+- **Composable traits for pages**: `compose` helper and `WithToaster` trait add cross-cutting behaviour like toaster verification to page objects.
+- **Type-safe i18n utility**: `i18n` flattens `en.json` into strongly typed translation keys and a `translate` helper, exposed to tests via the `t` fixture.
+- **Route & tag constants**: `ROUTES` and `TAGS` centralise URL paths and tag names for consistent usage across tests and config.
+- **User role constants**: `USER_ROLES` and `UserRole` give a single source of truth for supported user roles.
+- **Custom fixtures layer**: `src/fixtures/baseTest.ts` wraps Playwright's `test` with fixtures for page objects, routes, tags, and translations.
+- **Reporting & quality tooling**: Allure + HTML reporters, ESLint, Prettier, type-checking, Husky and lint-staged are wired via `package.json` scripts.
+- **DRY**: If a locator or method exists in a Page Object, reuse it. Do not duplicate logic.
+
+## Selector Strategy
+
+- **Selector strategy**: Configured `testIdAttribute: 'data-test'` enforces `data-test` selectors as the primary way to target elements.
+
+1. **Priority 1**: `page.getByRole()` (Accessibility first).
+2. **Priority 2**: `page.getByLabel()` or `page.getByPlaceholder()`.
+3. **Priority 3**: `page.getByTestId()`.
+
+- **PROHIBITED**: Never use CSS classes (e.g., `.btn-primary`) or XPaths.
+
+## General conventions
+
+- **Keep using the Page Object Model**: New UI interactions should go into page objects under `src/pages`, not directly in tests.
+- **Extend `BasePage` for web pages**: New web pages should extend `BasePage` (or composed variants) to inherit navigation and shared components like `NavigationBar`.
+- **Use getter-style locators**: Expose locators via `private get` accessors (or small helper methods when parameters are required), never as eagerly-evaluated fields.
+- **Prefer `data-test` selectors**: When adding new UI, include stable `data-test` attributes and target them via `page.getByTestId(...)`.
+- **Use `test.step` for actions**: Wrap meaningful user flows (login, add to cart, etc.) in `test.step` blocks for readable reports.
+- **Reuse fixtures**: When writing tests, consume page objects and helpers from `@fixtures/baseTest` instead of instantiating Playwright `Page` or locators manually.
+- **JSDOC**: JSDoc on all methods
+- Use `test.step('Description', async () => { ... })` for every major action.
+- Assertions (`expect`) belong in `.spec.ts` files, NOT in Page Objects.
+- Use Playwright **Fixtures** for setup instead of `beforeEach` hooks.
+
+## Testing guidelines
+
+- **Tag tests intentionally**: Always tag tests with the appropriate `TAGS` (e.g. `SMOKE`, `REGRESSION`, `AUTH`) so they participate correctly in filtered runs.
+- **Respect auth projects**: Member/admin tests should rely on the auth setup projects and `.auth/*.json` storage state files rather than re-logging in inline.
+- **Use i18n helpers**: When asserting user-facing messages (toasters, labels, etc.), prefer the `t` fixture with translation keys over hard-coded strings.
+- **Keep tests focused**: Single test should validate one coherent behaviour (e.g. "add item to cart" or "contact header visible"), delegating UI details to page objects.
