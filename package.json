@@ -34,12 +34,14 @@
     "test:report": "npm run allure:clear && npx playwright test && npm run allure:serve",
     "// --- LOCAL AI SCRIPTS ---": "",
     "ai:init": "playwright-cli install --skills",
-    "ai:show": "playwright-cli show",
-    "ai:heal": "npx playwright test --healer"
+    "ai:show": "playwright-cli show"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20.18.1 <21"
+  },
   "description": "",
   "devDependencies": {
     "@playwright/cli": "^0.1.1",
