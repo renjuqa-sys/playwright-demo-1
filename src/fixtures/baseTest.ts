@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test';
 // import path from 'path';
 import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
-import { translate } from '@utils/i118n';
+import { translate, type TranslationKey } from '@utils/i18n';
 import { ROUTES } from '@constants/routes';
 import { TAGS } from '@constants/tags';
 // ... import other pages
@@ -15,7 +15,7 @@ type MyFixtures = {
   routes: typeof ROUTES;
   tags: typeof TAGS;
 
-  t: (key: string, count?: number) => string;
+  t: (key: TranslationKey, count?: number) => string;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -46,7 +46,7 @@ export const test = base.extend<MyFixtures>({
   },
 
   t: async ({}, use) => {
-    await use((key: string, count?: number) => translate(key, count));
+    await use((key: TranslationKey, count?: number) => translate(key, count));
   },
   webCataloguePage: async ({ page }, use) => {
     await use(new WebCataloguePage(page));
