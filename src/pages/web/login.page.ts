@@ -1,6 +1,7 @@
-import { Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
 import { test } from '@fixtures/pages.fixture';
+import { TranslationKey } from '@utils/i18n';
 
 export class WebLoginPage extends BasePage {
   // Use getters instead of constructor variables
@@ -14,8 +15,8 @@ export class WebLoginPage extends BasePage {
     return this.page.getByTestId('login-submit');
   }
 
-  constructor(page: any) {
-    super(page);
+  constructor(page: Page, t: (key: TranslationKey, count?: number) => string) {
+    super(page, t);
   }
 
   public async login(email: string, pass: string) {

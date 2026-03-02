@@ -1,5 +1,6 @@
 import { test as baseTest } from '@playwright/test';
 import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
+import { UtilsFixtures } from '@fixtures/utils.fixtures';
 
 type MyPages = {
   webLoginPage: WebLoginPage;
@@ -7,7 +8,7 @@ type MyPages = {
   webProductPage: WebProductPage;
 };
 
-export const test = baseTest.extend<MyPages>({
+export const test = baseTest.extend<MyPages & UtilsFixtures>({
   // storageState: async ({}, use, testInfo) => {
   //   // This fixture handles authentication state for tests that require it, i.e. those project names that include 'member'. It loads a pre-saved storage state from a file based on the worker index, which allows for parallel test execution with different user accounts.
   //   if (testInfo.project.name.includes('member')) {
@@ -26,14 +27,14 @@ export const test = baseTest.extend<MyPages>({
   //     await use(undefined);
   //   }
   // },
-  webCataloguePage: async ({ page }, use) => {
-    await use(new WebCataloguePage(page));
+  webCataloguePage: async ({ page, t }, use) => {
+    await use(new WebCataloguePage(page, t));
   },
-  webProductPage: async ({ page }, use) => {
-    await use(new WebProductPage(page));
+  webProductPage: async ({ page, t }, use) => {
+    await use(new WebProductPage(page, t));
   },
-  webLoginPage: async ({ page }, use) => {
-    await use(new WebLoginPage(page));
+  webLoginPage: async ({ page, t }, use) => {
+    await use(new WebLoginPage(page, t));
   },
 });
 

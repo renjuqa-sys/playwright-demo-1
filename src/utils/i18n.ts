@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Type-safe i18n utilities for Playwright tests. Uses locale JSON to provide
  * autocomplete-friendly translation keys and optional pluralization.
@@ -37,10 +38,8 @@ type TranslationResource = { [key: string]: string | TranslationResource };
  * @param count - Optional count for pluralized messages; also used for {{count}} replacement
  * @returns The translated string for the current locale (from APP_LOCALE, default 'en')
  */
-export const translate = (key: TranslationKey, count?: number): string => {
-  const locale = (process.env.APP_LOCALE || 'en') as keyof typeof resources;
-  const dict = resources[locale] as unknown as TranslationResource;
-
+export const translate = (key: TranslationKey, locale: string = 'en', count?: number): string => {
+  const dict = (resources[locale as keyof typeof resources] || resources.en) as unknown as TranslationResource;
   /**
    * Resolves a dot-notation path in a nested object (e.g. "CART.ITEM_COUNT_one").
    * @param obj - Root object (locale dict)
@@ -55,6 +54,11 @@ export const translate = (key: TranslationKey, count?: number): string => {
 
   // Logic for plural suffixes (_zero, _one, _other)
   let message = baseValue;
+  if (message === undefined) {
+    console.warn(`[i18n] Missing translation key: "${key}" for locale: "${locale}"`);
+    return `[MISSING:${key}]`; // This shows up in your Playwright report/screenshot
+  }
+
   if (count !== undefined) {
     if (count === 0) message = getNestedValue(dict, `${key}_zero`) || baseValue;
     else if (count === 1) message = getNestedValue(dict, `${key}_one`) || baseValue;
@@ -62,9 +66,5 @@ export const translate = (key: TranslationKey, count?: number): string => {
   }
 
   // Final string replacement for {{count}} variables
-  if (typeof message === 'string') {
-    return message.replace('{{count}}', String(count ?? 0));
-  }
-
-  return String(message || key);
+  return typeof message === 'string' ? message.replace('{{count}}', String(count ?? 0)) : String(message || key);
 };

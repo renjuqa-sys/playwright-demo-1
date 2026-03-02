@@ -1,24 +1,17 @@
 import { Locator, Page, test } from '@playwright/test';
 import { WebAppRoute, ROUTES } from '@constants/routes';
 import { NavigationBar } from './navigation-bar.page';
-import { translate, TranslationKey } from '@utils/i18n';
+import { TranslationKey } from '@utils/i18n';
 export class BasePage {
   // common COMPONENTS like header, footer, navBar etc
   public readonly navBar: NavigationBar;
 
-  constructor(public readonly page: Page) {
+  constructor(
+    public readonly page: Page,
+    // The 't' injected here is already localized by the fixture, so we don't need to pass the locale
+    protected readonly t: (key: TranslationKey, count?: number) => string
+  ) {
     this.navBar = new NavigationBar(page);
-  }
-
-  /**
-   * Returns the localized string for a translation key. Use for locators and assertions
-   * that depend on user-facing text. Supports pluralization when count is provided.
-   * @param key - Type-safe translation key (e.g. 'TOASTER.PRODUCT_ADDED', 'BUTTONS.ADD_TO_CART')
-   * @param count - Optional count for pluralized messages (_zero, _one, _other)
-   * @returns The translated string for the current locale
-   */
-  protected t(key: TranslationKey, count?: number) {
-    return translate(key, count);
   }
 
   private get globalLoader(): Locator {
