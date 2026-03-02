@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
 import { BasePage } from '../common/base.page';
-import { test } from '@fixtures/baseTest';
+import { test } from '@fixtures/pages.fixture';
 
 export class WebLoginPage extends BasePage {
   // Use getters instead of constructor variables

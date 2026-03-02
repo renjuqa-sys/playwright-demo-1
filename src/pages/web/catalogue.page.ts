@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
-import { test } from '@fixtures/baseTest';
+import { test } from '@fixtures/pages.fixture';
 
 export class WebCataloguePage extends BasePage {
   private productByName(name: string): Locator {
