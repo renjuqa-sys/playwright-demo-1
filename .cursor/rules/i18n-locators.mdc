@@ -6,7 +6,8 @@ globs: src/pages/**/*.ts
 # i18n & Dynamic Locator Rules
 
 ## 1. Core Rule
-All user-facing text in locators MUST be parameterized using the type-safe `this.t()` utility inherited from `BasePage`.
+- All user-facing text in locators MUST be parameterized using the type-safe `this.t()` utility inherited from `BasePage`.
+- The this.t() utility is injected via the constructor. Never attempt to import translate directly into a Page Object.
 
 ## 2. Static vs. Dynamic Accessors
 - **Static Locators (No Parameters)**: MUST use `private get` accessors.
@@ -15,6 +16,7 @@ All user-facing text in locators MUST be parameterized using the type-safe `this
 
 ## 3. Selector Priority
 1. **Primary**: `page.getByRole('role', { name: this.t('KEY') })` (Accessibility First).
+  - When using getByRole, always check for the [MISSING:KEY] pattern in screenshots during debugging to identify translation gaps.
 2. **Secondary**: `page.getByLabel(this.t('KEY'))` or `page.getByPlaceholder(this.t('KEY'))`.
 3. **Fallback**: `page.getByTestId(this.t('KEY'))` ONLY if no accessible role exists (e.g., generic icons).
 4. **PROHIBITED**: Never use CSS classes (e.g., `.btn-primary`) or XPaths.

@@ -16,7 +16,11 @@ alwaysApply: true
 - **Composable traits for pages**: `compose` helper and `WithToaster` trait add cross-cutting behaviour like toaster verification to page objects.
 - **Route & tag constants**: `ROUTES` and `TAGS` centralise URL paths and tag names for consistent usage across tests and config.
 - **User role constants**: `USER_ROLES` and `UserRole` give a single source of truth for supported user roles.
-- **Custom fixtures layer**: `src/fixtures/baseTest.ts` wraps Playwright's `test` with fixtures for page objects, routes, tags, and translations.
+- **Custom fixtures layer**:
+
+* Centralized Fixture Merger: All tests MUST import test and expect from @fixtures/base.fixture.
+* Flat Fixture Architecture: New fixtures should be independent files and merged in base.fixture.ts using mergeTests to avoid circular dependencies.
+
 - **Reporting & quality tooling**: Allure + HTML reporters, ESLint, Prettier, type-checking, Husky and lint-staged are wired via `package.json` scripts.
 - **DRY**: If a locator or method exists in a Page Object, reuse it. Do not duplicate logic.
 
@@ -33,3 +37,4 @@ alwaysApply: true
 - Assertions (`expect`) belong in `.spec.ts` files, NOT in Page Objects.
 - Use Playwright **Fixtures** for setup instead of `beforeEach` hooks.
 - **Fixtures**: Use the custom `@fixtures/baseTest` layer. Do not manually instantiate Page Objects using `new`.
+- **Constructor Injection Rule**: All Page Objects must define page and t in their constructor. This ensures they don't rely on global imports for translations, allowing the Fixture to control the locale dynamically.
