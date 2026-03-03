@@ -4,7 +4,7 @@ import { TAGS } from './src/constants/tags';
 import path from 'path';
 
 // Initialize dotenv
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env'), quiet: true });
 
 const isCI = !!process.env.CI;
 
