@@ -1,7 +1,7 @@
 import { test, expect } from '@fixtures/base.fixture';
 import { TAGS } from '@constants/tags';
 
-test('Add item to cart4', { tag: [TAGS.SMOKE, TAGS.AUTH] }, async ({ webCataloguePage, webProductPage, t, routes }) => {
+test('Add item to cart4', { tag: [TAGS.SMOKE] }, async ({ webCataloguePage, webProductPage, t, routes }) => {
   await webCataloguePage.open(routes.HOME);
   await webCataloguePage.navBar.verifyUserIsLoggedIn();
   await webCataloguePage.selectProduct('Combination Pliers');
