@@ -16,7 +16,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!isCI, // Fail if test.only is accidentally left in the code when running in CI
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : 1,
+  workers: isCI ? 2 : 1,
   reporter: [
     ['list', { printSteps: false }], // Summary: shows the list ONLY at the end, without step-by-step noise
     [
