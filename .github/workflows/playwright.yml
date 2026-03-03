@@ -124,6 +124,10 @@ jobs:
           name: auth-states
           path: .auth/
       ##################################
+      - name: List tests to be executed
+        run:
+          npx playwright test --list --project=web-regression-guest --project=web-regression-member
+      ##################################
       - name: Run Sharded Tests
         run: >
           npx playwright test 
