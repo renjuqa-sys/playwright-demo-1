@@ -31,36 +31,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.18.1'
-          cache: 'npm'
-      - run: npm ci
+      ##################################
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      ##################################
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+      ##################################
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(npx playwright --version | cut -d' ' -f2)" >> $GITHUB_OUTPUT
-
+      ##################################
+      #  Optimized Browser Cache (Chromium Only)
       - name: Cache Playwright Browsers
         id: cache-playwright
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ steps.playwright-version.outputs.version }}-${{ runner.os }}
-
-      - name: Install Playwright Browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
-
+      ##################################
+      - name: Install Playwright Browsers (Chromium Only)
+        if:
+          steps.cache-playwright.outputs.cache-hit != 'true'
+          # Shave 30s by only installing chromium
+        run: npx playwright install chromium --with-deps
+      ##################################
       - name: Install Playwright Dependencies
         if: steps.cache-playwright.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
+        run: npx playwright install-deps chromium
+      ##################################
       - name: Run Global Setup
-        # Fix for project names identified in your logs
         run: npx playwright test --project=setup-web --project=setup-mobile
-      - name: Upload Setup Debug Artifacts
-        if: failure() # This ensures it runs even if the login fails
-        uses: actions/upload-artifact@v4
-        with:
-          name: setup-failure-artifacts
-          path: test-results/
-          retention-days: 7
+      ##################################
       - name: Upload Auth States
         uses: actions/upload-artifact@v4
         with:
@@ -88,31 +95,34 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.18.1'
-          cache: 'npm'
-      - run: npm ci
+      ##################################
+      # Re-use node_modules cache
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(npx playwright --version | cut -d' ' -f2)" >> $GITHUB_OUTPUT
+      ##################################
 
-      - name: Cache Playwright Browsers
-        id: cache-playwright
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      ##################################
+      - name: Restore Playwright Browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ steps.playwright-version.outputs.version }}-${{ runner.os }}
-
-      - name: Install Playwright Browsers
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
-
+      ##################################
       - name: Install Playwright Dependencies
-        if: steps.cache-playwright.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
+        run: npx playwright install-deps chromium
+      ##################################
       - name: Download Auth States
         uses: actions/download-artifact@v4
         with:
           name: auth-states
           path: .auth/
+      ##################################
       - name: Run Sharded Tests
         run: >
           npx playwright test 
@@ -120,6 +130,7 @@ jobs:
           --project=web-regression-member 
           --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
           --reporter=blob
+      ##################################
       - name: Upload Shard Report (Blob)
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,6 +138,7 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: blob-report/
           retention-days: 1
+      ##################################
       - name: Upload Test Results (Screenshots & Videos)
         if: failure() # Only runs if the tests fail
         uses: actions/upload-artifact@v4
@@ -144,15 +156,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.18.1'
-      - run: npm ci
+
+      # Use a lightweight install for merging
+      - name: Install Playwright only
+        run: npm install @playwright/test
+
       - name: Download all shard reports
         uses: actions/download-artifact@v4
         with:
           path: all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
+
       - name: Merge into HTML Report
-        run: npm run "merge report"
+        run: npx playwright merge-reports --reporter=html ./all-blob-reports
+
       - name: Upload Final Report
         uses: actions/upload-artifact@v4
         with:
