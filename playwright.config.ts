@@ -30,6 +30,13 @@ export default defineConfig({
   ],
   globalTeardown: './tests/auth/global.teardown.ts',
   use: {
+    // Mimics a real Chrome browser on Windows 10
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    viewport: { width: 1280, height: 720 },
+    extraHTTPHeaders: {
+      'Accept-Language': 'en-US,en;q=0.9',
+    },
     baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',
     // Set the browser locale based on ENV
     locale: process.env.APP_LOCALE || 'en',
