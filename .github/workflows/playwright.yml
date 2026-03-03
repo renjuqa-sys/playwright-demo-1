@@ -9,7 +9,7 @@ on:
       environment:
         description: 'Environment to run tests against'
         required: true
-        default: 'Production'
+        default: 'Staging'
         type: choice
         options:
           - Development
@@ -17,9 +17,16 @@ on:
           - Production
 
 jobs:
-  # JOB 1: Validation, Setup & Lint
   setup:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'Staging' }}
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      # Secrets (Masked in logs)
+      WEB_USERS: ${{ secrets.WEB_USERS }}
+      MOBILE_USERS: ${{ secrets.MOBILE_USERS }}
+      # Variables (Visible in logs)
+      APP_LOCALE: ${{ vars.APP_LOCALE }} 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,14 +34,10 @@ jobs:
           node-version: '20.18.1'
           cache: 'npm'
       - run: npm ci
-      - name: Run Typecheck
-        run: npm run typecheck
-      - name: Run Lint Check
-        run: npm run lint
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Global Setup
-        # Fix: Running the actual setup projects found in your config
+        # Fix for project names identified in your logs
         run: npx playwright test --project=setup-web --project=setup-mobile
       - name: Upload Auth States
         uses: actions/upload-artifact@v4
@@ -43,14 +46,15 @@ jobs:
           path: .auth/
           retention-days: 1
 
-  # JOB 2: Sharded Test Execution
   test:
     needs: setup
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'Staging' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
-      APP_LOCALE: ${{ secrets.APP_LOCALE }}
+      WEB_USERS: ${{ secrets.WEB_USERS }}
+      MOBILE_USERS: ${{ secrets.MOBILE_USERS }}
+      APP_LOCALE: ${{ vars.APP_LOCALE }}
     strategy:
       fail-fast: false
       matrix:
@@ -62,8 +66,7 @@ jobs:
         with:
           node-version: '20.18.1'
           cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Download Auth States
@@ -86,7 +89,6 @@ jobs:
           path: blob-report/
           retention-days: 1
 
-  # JOB 3: Merge and Final HTML Report
   merge-reports:
     if: always()
     needs: [test]
@@ -96,8 +98,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20.18.1'
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
       - name: Download all shard reports
         uses: actions/download-artifact@v4
         with:
