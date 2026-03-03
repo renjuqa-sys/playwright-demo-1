@@ -3,8 +3,13 @@ import fs from 'fs';
 import path from 'path';
 
 async function globalTeardown() {
-  const authDir = path.join(process.cwd(), '.auth');
+  // Allow CI setup phase to keep auth files for upload
+  if (process.env.SKIP_AUTH_CLEANUP === 'true') {
+    console.log('⚠️ Skipping global auth cleanup (SKIP_AUTH_CLEANUP=true).');
+    return;
+  }
 
+  const authDir = path.join(process.cwd(), '.auth');
   if (fs.existsSync(authDir)) {
     const files = fs.readdirSync(authDir);
     for (const file of files) {
@@ -15,5 +20,4 @@ async function globalTeardown() {
     console.log(`\n🧹 Global Cleanup: Deleted ${files.length} auth files.`);
   }
 }
-
 export default globalTeardown;
