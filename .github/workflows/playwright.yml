@@ -4,17 +4,38 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  # Allows manual runs with environment selection from the GitHub UI
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        required: true
+        default: 'Staging'
+        type: choice
+        options:
+          - Development
+          - Staging
+          - Production
 
 jobs:
-  # JOB 1: Global Authentication Setup
+  # JOB 1: Validation, Setup & Lint
   setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1' # Matches your .nvmrc and engines
+          cache: 'npm'
       - run: npm ci
+      - name: Run Typecheck
+        run: npm run typecheck
+      - name: Run Lint Check
+        run: npm run lint
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Run Global Setup
-        run: npx playwright test --project=setup
+        run: npm run auth:setup # Matches script in your package.json
       - name: Upload Auth States
         uses: actions/upload-artifact@v4
         with:
@@ -26,39 +47,47 @@ jobs:
   test:
     needs: setup
     runs-on: ubuntu-latest
+    # Selects the GitHub Environment based on manual input or defaults to Staging
+    environment: ${{ github.event.inputs.environment || 'Production' }}
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }} # Injected from GitHub Environment Secrets
+      APP_LOCALE: ${{ secrets.APP_LOCALE }}
     strategy:
       fail-fast: false
       matrix:
-        # Sharding: Split tests into 2 machines, each running a diferent shard of tests
         shardIndex: [1, 2]
         shardTotal: [2]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
-      - name: Run Lint Check
-        run: npm run lint
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Download Auth States
         uses: actions/download-artifact@v4
         with:
           name: auth-states
           path: .auth/
       - name: Run Sharded Tests
-        # Runs both Web regression guest & member for this specific shard
         run: >
           npx playwright test 
           --project=web-regression-guest 
           --project=web-regression-member 
           --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-      - name: Upload Shard Report
+          --reporter=blob
+      - name: Upload Shard Report (Blob)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.shardIndex }}
-          path: playwright-report/
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: 1
 
-  # JOB 3: Merge reports from all shards and upload final report
+  # JOB 3: Merge and Final HTML Report
   merge-reports:
     if: always()
     needs: [test]
@@ -66,20 +95,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.1'
       - name: Install dependencies
         run: npm ci
-      - name: Run Lint Check
-        run: npm run lint
       - name: Download all shard reports
         uses: actions/download-artifact@v4
         with:
-          path: all-reports
-          pattern: playwright-report-*
+          path: all-blob-reports
+          pattern: blob-report-*
           merge-multiple: true
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-reports
+        run: npm run "merge report" # Note: matches your package.json script name
       - name: Upload Final Report
         uses: actions/upload-artifact@v4
         with:
           name: final-playwright-report
           path: playwright-report/
+          retention-days: 30
