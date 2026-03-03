@@ -9,7 +9,7 @@ on:
       environment:
         description: 'Environment to run tests against'
         required: true
-        default: 'Staging'
+        default: 'Production'
         type: choice
         options:
           - Development
@@ -19,14 +19,14 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'Staging' }}
+    environment: ${{ github.event.inputs.environment || 'Production' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
       # Secrets (Masked in logs)
       WEB_USERS: ${{ secrets.WEB_USERS }}
       MOBILE_USERS: ${{ secrets.MOBILE_USERS }}
       # Variables (Visible in logs)
-      APP_LOCALE: ${{ vars.APP_LOCALE }} 
+      APP_LOCALE: ${{ vars.APP_LOCALE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,7 +49,7 @@ jobs:
   test:
     needs: setup
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'Staging' }}
+    environment: ${{ github.event.inputs.environment || 'Production' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
       WEB_USERS: ${{ secrets.WEB_USERS }}
