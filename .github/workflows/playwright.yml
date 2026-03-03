@@ -130,6 +130,7 @@ jobs:
           --project=web-regression-member 
           --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
           --reporter=blob
+          --no-deps
       ##################################
       - name: Upload Shard Report (Blob)
         if: always()
