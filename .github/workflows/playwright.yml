@@ -169,8 +169,13 @@ jobs:
           merge-multiple: true
 
       - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter=html ./all-blob-reports
-
+        # Only run if there are actually reports to merge
+        run: |
+          if [ "$(ls -A all-blob-reports)" ]; then
+            npx playwright merge-reports --reporter=html ./all-blob-reports
+          else
+            echo "No reports found to merge."
+          fi
       - name: Upload Final Report
         uses: actions/upload-artifact@v4
         with:

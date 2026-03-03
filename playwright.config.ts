@@ -94,7 +94,17 @@ export default defineConfig({
       // Runs tests that are @regression but NOT @auth
       grep: [new RegExp(TAGS.REGRESSION)],
       grepInvert: [new RegExp(TAGS.AUTH)],
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        // Get all the standard Chrome settings first
+        ...devices['Desktop Chrome'],
+        // Mimics a real Chrome browser on Windows 10 so that Cloudfare doesn't block the request. OVERWRITE specific ones to bypass Cloudflare
+        userAgent:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 720 },
+        extraHTTPHeaders: {
+          'Accept-Language': 'en-US,en;q=0.9',
+        },
+      },
     },
     {
       name: 'web-regression-member',
@@ -102,7 +112,15 @@ export default defineConfig({
       grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.AUTH)],
       dependencies: ['setup-web'],
       use: {
+        // Get all the standard Chrome settings first
         ...devices['Desktop Chrome'],
+        // Mimics a real Chrome browser on Windows 10 so that Cloudfare doesn't block the request. OVERWRITE specific ones to bypass Cloudflare
+        userAgent:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 720 },
+        extraHTTPHeaders: {
+          'Accept-Language': 'en-US,en;q=0.9',
+        },
         storageState: `.auth/web-customer-${process.env.TEST_PARALLEL_INDEX || 0}.json`,
       },
     },
