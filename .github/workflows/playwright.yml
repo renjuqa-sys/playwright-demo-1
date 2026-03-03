@@ -144,7 +144,7 @@ jobs:
         if: failure() # Only runs if the tests fail
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-test-artifacts
+          name: playwright-test-artifacts-${{ matrix.shardIndex }}
           path: test-results/
           retention-days: 7
 
