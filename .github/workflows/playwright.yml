@@ -88,6 +88,13 @@ jobs:
           name: blob-report-${{ matrix.shardIndex }}
           path: blob-report/
           retention-days: 1
+      - name: Upload Test Results (Screenshots & Videos)
+        if: failure() # Only runs if the tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-artifacts
+          path: test-results/
+          retention-days: 7
 
   merge-reports:
     if: always()

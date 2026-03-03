@@ -47,6 +47,7 @@ export default defineConfig({
     {
       name: 'validate-env',
       testMatch: /.*\/validate-env\.setup\.ts$/,
+      retries: 0, // Never retry auth setup
     },
     // --- WEB SETUP & TEARDOWN ---
     {
@@ -54,6 +55,8 @@ export default defineConfig({
       testMatch: /.*\/auth\.setup\.ts$/,
       grep: /@web-auth/,
       dependencies: ['validate-env'],
+      retries: 0, // Never retry auth setup
+      timeout: 60000, // Highly recommended: increase timeout to avoid the error in your log
       teardown: 'teardown-web',
     },
     {
@@ -68,6 +71,7 @@ export default defineConfig({
       testMatch: /.*\/auth\.setup\.ts$/,
       grep: /@mobile-auth/,
       dependencies: ['validate-env'],
+      retries: 0, // Never retry auth setup
       teardown: 'teardown-mobile',
     },
     {
