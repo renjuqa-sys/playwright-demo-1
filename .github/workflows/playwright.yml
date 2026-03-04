@@ -9,17 +9,17 @@ on:
       environment:
         description: 'Environment to run tests against'
         required: true
-        default: 'Production'
+        default: 'PRODUCTION'
         type: choice
         options:
           - Development
           - Staging
-          - Production
+          - PRODUCTION
 
 jobs:
   setup:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'Production' }}
+    environment: ${{ github.event.inputs.environment || 'PRODUCTION' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
       WEB_USERS: ${{ secrets.WEB_USERS }}
@@ -78,7 +78,7 @@ jobs:
   test:
     needs: setup
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'Production' }}
+    environment: ${{ github.event.inputs.environment || 'PRODUCTION' }}
     env:
       NODE_OPTIONS: '--no-warnings'
       BASE_URL: ${{ secrets.BASE_URL }}
