@@ -22,7 +22,8 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'PRODUCTION' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
-      WEB_USERS: ${{ secrets.WEB_USERS }}
+      WEB_CUSTOMERS: ${{ secrets.WEB_CUSTOMERS }}
+      WEB_ADMINS: ${{ secrets.WEB_ADMINS }}
       APP_LOCALE: ${{ vars.APP_LOCALE }}
       SKIP_AUTH_CLEANUP: 'true'
     steps:
