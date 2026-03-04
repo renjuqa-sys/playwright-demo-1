@@ -4,7 +4,7 @@ import { test as setup } from '@playwright/test';
 setup('Validate Environment Variables', async () => {
   console.log('🔍 Checking .env configuration...');
 
-  const requiredVariables = ['WEB_USERS', 'MOBILE_USERS'];
+  const requiredVariables = ['WEB_ADMINS', 'WEB_CUSTOMERS'];
 
   for (const key of requiredVariables) {
     const value = process.env[key];

@@ -5,60 +5,38 @@ import { getCredentialForRole } from '../../src/utils/user-manager';
 import { ROUTES } from '@constants/routes';
 import { USER_ROLES, UserRole } from '@constants/user-role';
 
-// const authDir = path.join(process.cwd(), '.auth');
-// WEB AUTH SETUP
-// setup('authenticate web users', { tag: '@web-auth' }, async ({ webLoginPage }, testInfo) => {
-//   // Calculate Global Index
-//   // Get Shard Index (defaults to 1 locally)
-//   const shardIndex = process.env.TEST_SHARD_INDEX ? parseInt(process.env.TEST_SHARD_INDEX) : 1;
-//   // get number of workers per shard  (defaults to 1 locally))
-//   const workersPerShard = testInfo.config.workers || 1;
-//   // calculate global index for user assignment across shards and its workers => (shard - 1) * workers_per_shard + local_worker_index
-//   const globalIndex = (shardIndex - 1) * workersPerShard + testInfo.parallelIndex;
+// Calculate total pool size: 4 Shards * 2 Workers = 8 Users
+const SHARDS = parseInt(process.env.TOTAL_SHARDS || '1');
+const WORKERS = parseInt(process.env.WORKERS_PER_SHARD || '1');
+const TOTAL_USERS_NEEDED = SHARDS * WORKERS;
 
-//   // Get credentials and define file path
-//   const user = getCredentialForWorker(globalIndex, 'web');
-//   const authFile = path.join(path.join(process.cwd(), '.auth'), `web-user-${globalIndex}.json`);
+// Create 8 users. These will be shared by BOTH Web and Mobile projects.
+for (let i = 0; i < TOTAL_USERS_NEEDED; i++) {
+  setup(`Authenticate User Slot ${i}`, { tag: '@web-auth' }, async ({ webLoginPage, page }) => {
+    const authenticateRole = async (role: UserRole, prefix: string) => {
+      const credentials = getCredentialForRole(role, i);
 
-//   // Perform login
-//   await webLoginPage.open(ROUTES.LOGIN);
-//   await webLoginPage.login(user.email, user.password);
-//   // Save auth state for later use in tests and teardwon
-//   await webLoginPage.page.context().storageState({ path: authFile });
-// });
+      await setup.step(`Login as ${role} for Global User Slot ${i}`, async () => {
+        await webLoginPage.open(ROUTES.LOGIN);
+        await webLoginPage.login(credentials.email, credentials.password);
+        // Save to: .auth/web-customer-0.json, .auth/web-customer-1.json, etc.
+        await page.context().storageState({ path: `.auth/${prefix}-${role}-${i}.json` });
+        console.log(`Saved: .auth/${prefix}-${role}-${i}.json`);
+      });
+    };
 
-setup('Authenticate WEB multi-role users', { tag: '@web-auth' }, async ({ webLoginPage, page }) => {
-  const workerIndex = parseInt(process.env.TEST_PARALLEL_INDEX || '0');
+    // Setup both roles for this global index
+    await authenticateRole(USER_ROLES.CUSTOMER, 'web');
 
-  // Utility to handle the repetitive "Login and Save" flow
-  const authenticateRole = async (role: UserRole, fileName: string) => {
-    const credentials = getCredentialForRole(role, workerIndex);
-
-    await setup.step(`Authenticate as ${role}`, async () => {
-      await webLoginPage.open(ROUTES.LOGIN);
-      await webLoginPage.login(credentials.email, credentials.password);
-      await webLoginPage.navBar.verifyUserIsLoggedIn();
-      await page.context().storageState({ path: `.auth/${fileName}-${workerIndex}.json` });
-      console.log(`Saved auth state for role ${role} in file ${fileName}-${workerIndex}.json.`);
+    await setup.step('Cleanup for next role', async () => {
+      await page.context().clearCookies(); //  Clear state to ensure clean login for admin
+      await page.evaluate(() => {
+        window.localStorage.clear(); // Clear local storage
+        window.sessionStorage.clear(); // Clear sesssion storage as well, just to eb safe
+      });
+      console.log(`Cleared session for next role setup.`);
     });
-  };
 
-  // Setup customer sessiom
-  await authenticateRole(USER_ROLES.CUSTOMER, 'web-customer');
-
-  // 2. Clear and Setup Admin (Gold Standard: ensure full isolation)
-  await setup.step('Clear session for next role', async () => {
-    await page.context().clearCookies(); //  Clear state to ensure clean login for admin
-    await page.evaluate(() => {
-      window.localStorage.clear(); // Clear local storage
-      window.sessionStorage.clear(); // Clear sesssion storage as well, just to eb safe
-    });
-    console.log(`Cleared session for next role setup.`);
+    await authenticateRole(USER_ROLES.ADMIN, 'web');
   });
-
-  // Setup admin sessiom
-  await authenticateRole(USER_ROLES.ADMIN, 'web-admin');
-});
-
-// MOBILE AUTH SETUP (Same pattern)
-setup('Authenticate mobile users', { tag: '@mobile-auth' }, async ({}) => {});
+}

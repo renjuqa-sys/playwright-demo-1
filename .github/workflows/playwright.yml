@@ -23,7 +23,6 @@ jobs:
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
       WEB_USERS: ${{ secrets.WEB_USERS }}
-      MOBILE_USERS: ${{ secrets.MOBILE_USERS }}
       APP_LOCALE: ${{ vars.APP_LOCALE }}
       SKIP_AUTH_CLEANUP: 'true'
     steps:
@@ -83,9 +82,12 @@ jobs:
     env:
       NODE_OPTIONS: '--no-warnings'
       BASE_URL: ${{ secrets.BASE_URL }}
-      WEB_USERS: ${{ secrets.WEB_USERS }}
-      MOBILE_USERS: ${{ secrets.MOBILE_USERS }}
+      WEB_CUSTOMERS: ${{ secrets.WEB_CUSTOMERS }}
+      WEB_ADMINS: ${{ secrets.WEB_ADMINS }}
       APP_LOCALE: ${{ vars.APP_LOCALE }}
+      TOTAL_SHARDS: 2
+      WORKERS_PER_SHARD: 2
+      SHARD_INDEX: ${{ matrix.shardIndex || 1 }}
     strategy:
       fail-fast: false
       matrix:
@@ -125,8 +127,7 @@ jobs:
           path: .auth/
       ##################################
       - name: List tests to be executed
-        run:
-          npx playwright test --list --project=web-regression-guest --project=web-regression-member
+        run: npx playwright test --list --project=web-regression-guest --project=web-regression-member
       ##################################
       - name: Run Sharded Tests
         run: >
