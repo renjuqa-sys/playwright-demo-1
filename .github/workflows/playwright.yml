@@ -65,7 +65,7 @@ jobs:
         run: npx playwright install-deps chromium
       ##################################
       - name: Run Global Setup
-        run: npx playwright test --project=setup-web --project=setup-mobile
+        run: npx playwright test --project=setup-web
       ##################################
       - name: Upload Auth States
         uses: actions/upload-artifact@v4
