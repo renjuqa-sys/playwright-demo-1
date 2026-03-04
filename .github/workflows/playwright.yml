@@ -22,6 +22,8 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'PRODUCTION' }}
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
+      TOTAL_SHARDS: 2
+      WORKERS_PER_SHARD: 2
       WEB_CUSTOMERS: ${{ secrets.WEB_CUSTOMERS }}
       WEB_ADMINS: ${{ secrets.WEB_ADMINS }}
       APP_LOCALE: ${{ vars.APP_LOCALE }}
