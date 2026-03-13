@@ -2,8 +2,8 @@ import { test, expect } from '@fixtures/base.fixture';
 import { TAGS } from '@constants/tags';
 
 test(
-  'Add item to cart3',
-  { tag: [TAGS.REGRESSION, TAGS.AUTH] },
+  'Add item to cart3 - Add to cart (Logged In & Out State)',
+  { tag: [TAGS.REGRESSION, TAGS.MEMBER] },
   async ({ webCataloguePage, webProductPage, t, routes }) => {
     await webCataloguePage.open(routes.HOME);
     await webCataloguePage.navBar.verifyUserIsLoggedIn();

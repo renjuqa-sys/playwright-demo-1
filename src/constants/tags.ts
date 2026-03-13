@@ -4,8 +4,9 @@ export const TAGS = {
   P2: '@p2',
 
   // Auth States
-  AUTH: '@auth',
   GUEST: '@guest',
+  MEMBER: '@member',
+  UNIVERSAL: '@universal',
 
   // Scopes
   SMOKE: '@smoke',

@@ -92,8 +92,7 @@ export default defineConfig({
       name: 'web-regression-guest',
       testDir: './tests/web',
       // Runs tests that are @regression but NOT @auth
-      grep: [new RegExp(TAGS.REGRESSION)],
-      grepInvert: [new RegExp(TAGS.AUTH)],
+      grep: [/TAGS.REGRESSION/, /TAGS.GUEST|TAGS.UNIVERSAL/],
       use: {
         // Get all the standard Chrome settings first
         ...devices['Desktop Chrome'],
@@ -109,7 +108,7 @@ export default defineConfig({
     {
       name: 'web-regression-member',
       testDir: './tests/web',
-      grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.AUTH)],
+      grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-web'],
       use: {
         // Get all the standard Chrome settings first
@@ -130,13 +129,13 @@ export default defineConfig({
       name: 'web-smoke-guest',
       testDir: './tests/web',
       grep: [new RegExp(TAGS.SMOKE)],
-      grepInvert: [new RegExp(TAGS.AUTH)],
+      grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'web-smoke-member',
       testDir: './tests/web',
-      grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.AUTH)],
+      grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-web'],
       use: {
         ...devices['Desktop Chrome'],
@@ -161,13 +160,13 @@ export default defineConfig({
       name: 'mobile-regression-guest',
       testDir: './tests/mobile',
       grep: [new RegExp(TAGS.REGRESSION)],
-      grepInvert: [new RegExp(TAGS.AUTH)],
+      grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'mobile-regression-member',
       testDir: './tests/mobile',
-      grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.AUTH)],
+      grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-mobile'],
       use: {
         ...devices['Pixel 7'],
@@ -179,13 +178,13 @@ export default defineConfig({
       name: 'mobile-smoke-guest',
       testDir: './tests/mobile',
       grep: [new RegExp(TAGS.SMOKE)],
-      grepInvert: [new RegExp(TAGS.AUTH)],
+      grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'mobile-smoke-member',
       testDir: './tests/mobile',
-      grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.AUTH)],
+      grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-mobile'],
       use: {
         ...devices['Pixel 7'],
