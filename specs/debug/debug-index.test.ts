@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { test } from '@fixtures/base.fixture';
+import { test } from '@fixtures/base-fixture';
 import { expect } from '@playwright/test';
 
 test.describe('Infrastructure Debugging', () => {

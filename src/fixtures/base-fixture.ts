@@ -1,6 +1,6 @@
 import { mergeExpects, mergeTests } from '@playwright/test';
-import { test as pageTest, expect as pageExpect } from '@fixtures/pages.fixture';
-import { test as utilTest, expect as utilExpect } from '@fixtures/utils.fixtures';
+import { test as pageTest, expect as pageExpect } from '@fixtures/pages-fixture';
+import { test as utilTest, expect as utilExpect } from '@fixtures/utils-fixtures';
 
 type DebugFixtures = {
   logAuthPath: void;

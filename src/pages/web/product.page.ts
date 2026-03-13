@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
-import { test } from '@fixtures/pages.fixture';
+import { test } from '@fixtures/pages-fixture';
 import { WithToaster } from '../common/traits/withToaster';
 import { compose } from '@utils/compose';
 import { TranslationKey } from '@utils/i18n';

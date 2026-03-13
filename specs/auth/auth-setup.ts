@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 // tests/auth/auth.setup.ts
-import { test as setup } from '@fixtures/base.fixture';
+import { test as setup } from '@fixtures/base-fixture';
 import { getCredentialForRole } from '../../src/utils/user-manager';
 import { ROUTES } from '@constants/routes';
 import { USER_ROLES, UserRole } from '@constants/user-role';

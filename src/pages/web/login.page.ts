@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../common/base.page';
-import { test } from '@fixtures/pages.fixture';
+import { test } from '@fixtures/pages-fixture';
 import { TranslationKey } from '@utils/i18n';
 
 export class WebLoginPage extends BasePage {

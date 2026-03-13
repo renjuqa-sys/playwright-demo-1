@@ -1,9 +1,9 @@
-import { test, expect } from '@fixtures/base.fixture';
+import { test, expect } from '@fixtures/base-fixture';
 import { TAGS } from '@constants/tags';
 
 test(
-  'Add item to cart3 - Add to cart (Logged In & Out State)',
-  { tag: [TAGS.REGRESSION, TAGS.MEMBER] },
+  'Add item to cart4 - Product Catalogue (Logged In & Out State)',
+  { tag: [TAGS.REGRESSION, TAGS.UNIVERSAL] },
   async ({ webCataloguePage, webProductPage, t, routes }) => {
     await webCataloguePage.open(routes.HOME);
     await webCataloguePage.navBar.verifyUserIsLoggedIn();

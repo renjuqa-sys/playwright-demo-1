@@ -1,6 +1,6 @@
 import { test as baseTest } from '@playwright/test';
 import { WebLoginPage, WebCataloguePage, WebProductPage } from '@pages/web';
-import { UtilsFixtures } from '@fixtures/utils.fixtures';
+import { UtilsFixtures } from '@fixtures/utils-fixtures';
 
 type MyPages = {
   webLoginPage: WebLoginPage;

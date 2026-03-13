@@ -12,7 +12,7 @@ const isCI = !!process.env.CI;
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir: './specs',
   fullyParallel: true,
   forbidOnly: !!isCI, // Fail if test.only is accidentally left in the code when running in CI
   retries: isCI ? 2 : 0,
@@ -28,7 +28,7 @@ export default defineConfig({
     ],
     ['html', { open: 'never' }], // (Optional) Standard HTML report as a backup
   ],
-  globalTeardown: './tests/auth/global.teardown.ts',
+  globalTeardown: './specs/auth/global.teardown.ts',
   use: {
     // Mimics a real Chrome browser on Windows 10 so that Cloudfare doesn't block the request
     userAgent:
@@ -90,7 +90,7 @@ export default defineConfig({
     // --- 2. WEB REGRESSION ---
     {
       name: 'web-regression-guest',
-      testDir: './tests/web',
+      testDir: './specs/web',
       // Runs tests that are @regression but NOT @auth
       grep: [/TAGS.REGRESSION/, /TAGS.GUEST|TAGS.UNIVERSAL/],
       use: {
@@ -107,7 +107,7 @@ export default defineConfig({
     },
     {
       name: 'web-regression-member',
-      testDir: './tests/web',
+      testDir: './specs/web',
       grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-web'],
       use: {
@@ -127,14 +127,14 @@ export default defineConfig({
     // --- 3. WEB SMOKE ---
     {
       name: 'web-smoke-guest',
-      testDir: './tests/web',
+      testDir: './specs/web',
       grep: [new RegExp(TAGS.SMOKE)],
       grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'web-smoke-member',
-      testDir: './tests/web',
+      testDir: './specs/web',
       grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-web'],
       use: {
@@ -146,7 +146,7 @@ export default defineConfig({
     // --- WEB ADMIN (EXAMPLE OF ROLE BASED TESTING) ----
     {
       name: 'web-admin',
-      testDir: './tests/web',
+      testDir: './specs/web',
       grep: /@admin/,
       dependencies: ['setup-web'],
       use: {
@@ -158,14 +158,14 @@ export default defineConfig({
     // --- 4. MOBILE REGRESSION ---
     {
       name: 'mobile-regression-guest',
-      testDir: './tests/mobile',
+      testDir: './specs/mobile',
       grep: [new RegExp(TAGS.REGRESSION)],
       grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'mobile-regression-member',
-      testDir: './tests/mobile',
+      testDir: './specs/mobile',
       grep: [new RegExp(TAGS.REGRESSION), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-mobile'],
       use: {
@@ -176,14 +176,14 @@ export default defineConfig({
     // --- 5. MOBILE SMOKE ---
     {
       name: 'mobile-smoke-guest',
-      testDir: './tests/mobile',
+      testDir: './specs/mobile',
       grep: [new RegExp(TAGS.SMOKE)],
       grepInvert: [new RegExp(TAGS.MEMBER)],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'mobile-smoke-member',
-      testDir: './tests/mobile',
+      testDir: './specs/mobile',
       grep: [new RegExp(TAGS.SMOKE), new RegExp(TAGS.MEMBER)],
       dependencies: ['setup-mobile'],
       use: {
@@ -193,7 +193,7 @@ export default defineConfig({
     // --- DEBUG TESTS ---
     {
       name: 'infrastructure-check',
-      testDir: './tests/debug',
+      testDir: './specs/debug',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
