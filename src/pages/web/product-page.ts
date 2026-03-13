@@ -1,13 +1,13 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../common/base.page';
+import { BasePage } from '../common/base-page';
 import { test } from '@fixtures/pages-fixture';
-import { WithToaster } from '../common/traits/withToaster';
+import { withToaster } from '../common/traits/with-toaster';
 import { compose } from '@utils/compose';
 import { TranslationKey } from '@utils/i18n';
 
-const PageWithTraits = compose(BasePage, WithToaster);
+const pageWithTraits = compose(BasePage, withToaster);
 
-export class WebProductPage extends PageWithTraits {
+export class WebProductPage extends pageWithTraits {
   constructor(page: Page, t: (key: TranslationKey, count?: number) => string) {
     super(page, t);
   }

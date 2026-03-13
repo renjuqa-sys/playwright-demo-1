@@ -1,6 +1,6 @@
 import { Locator, Page, test } from '@playwright/test';
 import { WebAppRoute, ROUTES } from '@constants/routes';
-import { NavigationBar } from './navigation-bar.page';
+import { NavigationBar } from './navigation-bar-page';
 import { TranslationKey } from '@utils/i18n';
 export class BasePage {
   // common COMPONENTS like header, footer, navBar etc

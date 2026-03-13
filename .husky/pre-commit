@@ -10,5 +10,5 @@ if grep -rE "test\.only\(|describe\.only\(" tests/; then
   exit 1
 fi
 
-# If validation passes, run lint-staged to only lint the files that are staged for commit instead of teh entire codebase
+# If validation passes, run lint-staged to only lint the files that are staged for commit instead of the entire codebase
 npx lint-staged

@@ -3,6 +3,7 @@ import tsParser from '@typescript-eslint/parser';
 import playwrightPlugin from 'eslint-plugin-playwright';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
+import checkFile from 'eslint-plugin-check-file';
 
 export default [
   {
@@ -12,6 +13,7 @@ export default [
       '@typescript-eslint': tsPlugin,
       playwright: playwrightPlugin,
       import: importPlugin,
+      'check-file': checkFile,
     },
     settings: {
       'import/resolver': {
@@ -53,6 +55,48 @@ export default [
               message: 'Please use path aliases (e.g., @constants/tags) instead of relative paths or src/ paths.',
             },
           ],
+        },
+      ],
+
+      // --- STRICT NAMING CONVENTIONS ---
+
+      // Enforce Kebab-Case for all filenames in src
+      'check-file/filename-naming-convention': [
+        'error',
+        {
+          // Rule 1: General files must be kebab-case and HAVE NO DOTS in the name
+          'src/**/!(*.spec|*.config|index).ts': 'KEBAB_CASE',
+          // Rule 2: Specifically allow the .spec extension for tests
+          'src/**/*.spec.ts': 'KEBAB_CASE',
+        },
+        {
+          // Set this to FALSE for the first rule to catch incorrect file names like -  "product.page.ts"          ignoreMiddleExtensions: false,
+        },
+      ],
+
+      // Enforce Kebab-Case for folder names
+      'check-file/folder-naming-convention': [
+        'error',
+        {
+          'src/**/': 'KEBAB_CASE',
+        },
+      ],
+
+      // Enforce PascalCase for Classes (Page Objects/Factories)
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'class',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'interface',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'variable',
+          format: ['camelCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
         },
       ],
 
